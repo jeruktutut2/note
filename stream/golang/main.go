@@ -23,7 +23,6 @@ func main() {
 		})
 	})
 	e.GET("/stream/stream-with-channel", func(c echo.Context) error {
-		// cannot do it when using json, just text html
 		c.Response().Header().Set(echo.HeaderContentType, echo.MIMETextHTMLCharsetUTF8)
 		c.Response().WriteHeader(http.StatusOK)
 		channelStream := make(chan string)
@@ -35,7 +34,6 @@ func main() {
 				return err
 			}
 			c.Response().Flush()
-			// time.Sleep(1 * time.Second)
 		}
 		return c.String(http.StatusOK, "Hello, World! stream-with-channel")
 	})
@@ -44,12 +42,7 @@ func main() {
 		fmt.Println("mantap")
 		c.Response().Header().Set("Content-Type", "text/event-stream")
 		c.Response().Header().Set("Cache-Control", "no-cache")
-		// c.Response().Header().Set("Content-Type", "application/json")
-		// c.Response().Header().Set("Transfer-Encoding", "chunked")
-		// c.Response().Header().Set(echo.HeaderContentType, echo.MIMETextHTMLCharsetUTF8)
 		c.Response().WriteHeader(http.StatusOK)
-		// c.Response().Header().Set("Content-Type", "text/plain")
-		// c.Response().Header().Set("Transfer-Encoding", "chunked")
 		serviceWithoutChannel(c)
 		return c.JSON(http.StatusOK, map[string]interface{}{
 			"response": "Hello, World! stream-without-channel",
@@ -60,8 +53,6 @@ func main() {
 		c.Response().Header().Set("Content-Type", "text/event-stream")
 		c.Response().Header().Set("Cache-Control", "no-cache")
 		c.Response().Header().Set("Connection", "keep-alive")
-		// c.Response().Header().Set("Access-Control-Allow-Origin", "*")
-		// c.Response().Header().Set("Transfer-Encoding", "chunked")
 		serviceWithSSE(c)
 		return c.String(http.StatusOK, "Hello, World! stream-with-sse")
 	})
@@ -106,7 +97,6 @@ func serviceWithoutChannel(c echo.Context) {
 		"response": "stream1",
 	}
 	json.NewEncoder(c.Response()).Encode(stream1)
-	// fmt.Fprint(c.Response().Writer, "stream1\n\n")
 	c.Response().Flush()
 	time.Sleep(2 * time.Second)
 
@@ -116,7 +106,6 @@ func serviceWithoutChannel(c echo.Context) {
 		"response": "stream2",
 	}
 	json.NewEncoder(c.Response()).Encode(stream2)
-	// fmt.Fprintln(c.Response().Writer, "stream2")
 	c.Response().Flush()
 	time.Sleep(2 * time.Second)
 
@@ -126,7 +115,6 @@ func serviceWithoutChannel(c echo.Context) {
 		"response": "stream3",
 	}
 	json.NewEncoder(c.Response()).Encode(stream3)
-	// fmt.Fprint(c.Response().Writer, "stream3\n")
 	c.Response().Flush()
 }
 

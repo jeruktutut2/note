@@ -2,8 +2,6 @@ package main
 
 import (
 	"context"
-	"github.com/labstack/echo/v4"
-	"github.com/labstack/gommon/log"
 	"net/http"
 	"os"
 	"os/signal"
@@ -13,6 +11,9 @@ import (
 	"timeout/routes"
 	"timeout/services"
 	"timeout/utils"
+
+	"github.com/labstack/echo/v4"
+	"github.com/labstack/gommon/log"
 )
 
 func main() {
@@ -42,7 +43,6 @@ func main() {
 		}
 	}()
 
-	// Wait for interrupt signal to gracefully shut down the server with a timeout of 10 seconds.
 	<-ctx.Done()
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()

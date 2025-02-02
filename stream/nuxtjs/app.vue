@@ -5,14 +5,12 @@
 
     onMounted(async () => {
         console.log('UI telah selesai dirender di browser')
-        // alert('Halaman sudah siap!')
 
         const response = await fetch("http://localhost:8080/stream/stream-without-channel"); // Panggil endpoint backend
         // const response = await fetch("/stream/stream-without-channel");
         if (!response.body) throw new Error("Response body is empty");
         const reader = response.body.getReader();
         const decoder = new TextDecoder();
-        // let receivedData = [];
     
         while (true) {
             const { value, done } = await reader.read();
@@ -20,9 +18,6 @@
     
             const chunk = decoder.decode(value, { stream: true });
             console.log("chunk:", chunk);
-                    
-            // receivedData.push(chunk);
-            // setData([...receivedData]); // Perbarui state setiap kali ada data baru
         }
     })
 

@@ -45,19 +45,7 @@ func main() {
 		clientsMutex.Lock()
 		clients[clientID] = ws
 		clientsMutex.Unlock()
-
-		// fmt.Println("Client", clientID, "terhubung!")
 		fmt.Println("clients:", clients)
-		// for {
-		// 	// Membaca pesan dari client
-		// 	_, msg, err := ws.ReadMessage()
-		// 	if err != nil {
-		// 		fmt.Println("Koneksi terputus:", err)
-		// 		break
-		// 	}
-
-		// 	fmt.Println("Pesan dari", clientID, ":", string(msg))
-		// }
 
 		<-c.Request().Context().Done()
 
@@ -77,19 +65,15 @@ func main() {
 		fmt.Println("message:", clientIdSendTo, message)
 
 		clientsMutex.Lock()
-		// fmt.Println("clients dari send message:", clients)
 		conn, exists := clients[clientIdSendTo]
 		clientsMutex.Unlock()
-		// fmt.Println("conn:", conn, exists)
 
 		if !exists {
 			return c.String(http.StatusNotFound, "Client tidak ditemukan")
 		}
 
 		// Kirim pesan ke client yang dipilih
-		// fmt.Println("conn:", conn)
 		err := conn.WriteMessage(websocket.TextMessage, []byte(message))
-		// fmt.Println("err:", err)
 		if err != nil {
 			return c.String(http.StatusInternalServerError, "Gagal mengirim pesan")
 		}

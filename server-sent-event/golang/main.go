@@ -54,16 +54,13 @@ func main() {
 
 			select {
 			case message := <-messageChan:
-				// fmt.Println("message:", message)
 				json.NewEncoder(c.Response()).Encode(message)
-				// c.Response().Flush()
 				flusher.Flush()
 			case <-c.Request().Context().Done():
 				fmt.Println("connection close")
 				return nil
 			}
 		}
-		//return c.String(http.StatusOK, "Hello, World!")
 	})
 
 	e.GET("/sse/send-message/:message", func(c echo.Context) error {
@@ -73,7 +70,6 @@ func main() {
 	})
 
 	e.GET("/sse/handle-sse-without-channel", func(c echo.Context) error {
-		// c.SetRequest(c.Request().WithContext(context.Background()))
 		c.Response().Header().Set("Content-Type", "text/event-stream")
 		c.Response().Header().Set("Cache-Control", "no-cache")
 		c.Response().Header().Set("Connection", "keep-alive")
@@ -98,16 +94,12 @@ func main() {
 	})
 
 	e.GET("/sse/send-message-without-channel/:message", func(c echo.Context) error {
-		// c.Response().Header().Set("Content-Type", "text/event-stream")
-		// c.Response().Header().Set("Cache-Control", "no-cache")
 		message := c.Param("message")
 		for i := 0; i < len(SSEClients); i++ {
 			fmt.Println("send message to:", SSEClients[i], " dengan pesan:", message)
 			ctx := SSEClients[i].Context
-			// fmt.Println("SSEClients[i]:", SSEClients[i].Id, SSEClients[i].Context)
 
 			headers := ctx.Response().Header()
-			// Menyusun output sebagai string
 			var output string
 			for key, values := range headers {
 				output += fmt.Sprintf("%s: %s\n", key, values)
@@ -118,12 +110,10 @@ func main() {
 			messageEvent = map[string]interface{}{
 				"message": message,
 			}
-			// json.NewEncoder(ctx.Response()).Encode(messageEvent)
 			jsonData, _ := json.Marshal(messageEvent)
 			fmt.Fprintf(ctx.Response(), "data: %s\n\n", jsonData)
 			ctx.Response().Flush()
 		}
-		// return c.JSON(http.StatusOK, "ok")
 		return nil
 	})
 

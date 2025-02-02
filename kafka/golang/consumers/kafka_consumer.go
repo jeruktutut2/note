@@ -31,30 +31,19 @@ func NewKafkaConsumer(ctx context.Context) KafkaConsumer {
 		log.Fatalln("error when subscribing consumer:", err)
 	}
 
-	// i := 0
 	go func() {
 		for {
-			// fmt.Println()
-			// i++
-			// fmt.Println("mantap", i)
-			// fmt.Println()
 			select {
 			case <-ctx.Done():
 				log.Println("stopping consumer")
 				return
 			default:
-				// fmt.Println()
-				// i++
-				// fmt.Println("mantap", i)
-				// fmt.Println()
 				message, err := consumer.ReadMessage(-1)
 				if err != nil {
 					log.Println("error reading message:", err)
 				} else {
 					log.Println("message:", string(message.Value), message.TopicPartition.Partition, message.TopicPartition.Offset)
 				}
-				// log.Println("message", message)
-				// log.Println("message:", string(message.Value), message.TopicPartition.Partition, message.TopicPartition.Offset)
 			}
 		}
 	}()

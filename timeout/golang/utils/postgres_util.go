@@ -3,12 +3,13 @@ package utils
 import (
 	"context"
 	"database/sql"
-	"github.com/jmoiron/sqlx"
-	_ "github.com/lib/pq"
 	"log"
 	"os"
 	"strconv"
 	"time"
+
+	"github.com/jmoiron/sqlx"
+	_ "github.com/lib/pq"
 )
 
 type PostgresUtil interface {
@@ -65,7 +66,6 @@ func NewPostgresUtil() PostgresUtil {
 	}
 	println(time.Now().String(), "postgres: pinged to", os.Getenv("POSTGRES_HOST"), ":", os.Getenv("POSTGRES_PORT"))
 
-	// println(time.Now().String(), "postgres: connected to", os.Getenv("POSTGRES_HOST"), ":", os.Getenv("POSTGRES_PORT"))
 	return &PostgresUtilImplementation{
 		db: db,
 	}

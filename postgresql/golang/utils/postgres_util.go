@@ -28,32 +28,9 @@ func NewPostgresUtil(host string, username string, password string, database str
 		log.Fatalln("postgres: error when connecting to:", err)
 	}
 
-	// maxOpenConnectionEnv := os.Getenv("POSTGRES_MAX_OPEN_CONNECTION")
-	// maxOpenConnection, err := strconv.Atoi(maxOpenConnectionEnv)
-	// if err != nil {
-	// 	log.Fatalln("postgres: error when converting max open connection from string to int:", err)
-	// }
 	db.SetMaxOpenConns(maxOpenConnection)
-
-	// maxIdleConnectionEnv := os.Getenv("POSTGRES_MAX_IDLE_CONNECTION")
-	// maxIdleConnection, err := strconv.Atoi(maxIdleConnectionEnv)
-	// if err != nil {
-	// 	log.Fatalln("postgres: error when converting max idle connection from string to int", err)
-	// }
 	db.SetMaxIdleConns(maxIdleConnection)
-
-	// connectionMaxIdletimeEnv := os.Getenv("POSTGRES_CONNECTION_MAX_IDLETIME")
-	// connectionMaxIdletime, err := strconv.Atoi(connectionMaxIdletimeEnv)
-	// if err != nil {
-	// 	log.Fatalln("postgres: error when converting connection max idletime from string to int:", err)
-	// }
 	db.SetConnMaxLifetime(time.Duration(connectionMaxIdletime) * time.Minute)
-
-	// connectionMaxLifetimeEnv := os.Getenv("POSTGRES_CONNECTION_MAX_LIFETIME")
-	// connectionMaxLifetime, err := strconv.Atoi(connectionMaxLifetimeEnv)
-	// if err != nil {
-	// 	log.Fatalln("postgres: error when converting connection max lifetime from string to int:", err)
-	// }
 	db.SetConnMaxLifetime(time.Duration(connectionMaxLifetime) * time.Minute)
 	println(time.Now().String(), "postgres: connected to", host, ":", port)
 
@@ -64,7 +41,6 @@ func NewPostgresUtil(host string, username string, password string, database str
 	}
 	println(time.Now().String(), "postgres: pinged to", host, ":", port)
 
-	// println(time.Now().String(), "postgres: connected to", os.Getenv("POSTGRES_HOST"), ":", os.Getenv("POSTGRES_PORT"))
 	return &PostgresUtilImplementation{
 		db: db,
 	}

@@ -33,7 +33,6 @@ func NewMqttUtil() MqttUtil {
 	println(time.Now().String(), "mqtt: connecting")
 	client := mqtt.NewClient(opts)
 	if token := client.Connect(); token.Wait() && token.Error() != nil {
-		// panic(token.Error())
 		log.Fatalln("error when connecting to mqtt:", token.Error())
 	}
 	println(time.Now().String(), "mqtt: connected")

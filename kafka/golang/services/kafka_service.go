@@ -21,15 +21,12 @@ func NewKafkaService(producer *kafka.Producer) KafkaService {
 }
 
 func (service *KafkaServiceImplementation) SendMessage(ctx context.Context, message string) (response string) {
-	// key := strconv.Itoa(i)
-	// value := fmt.Sprintf("Hello %d", i)
 	topic := "text-message"
 	msg := &kafka.Message{
 		TopicPartition: kafka.TopicPartition{
 			Topic:     &topic,
 			Partition: kafka.PartitionAny,
 		},
-		// Key:   []byte(key),
 		Value: []byte(message),
 	}
 	err := service.Producer.Produce(msg, nil)

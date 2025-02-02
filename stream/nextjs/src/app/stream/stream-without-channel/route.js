@@ -1,5 +1,4 @@
 export async function GET(req) {
-    // const { id } = req.params;
     const backendUrl = `http://localhost:8080/stream/stream-without-channel`;
 
     const backendRes = await fetch(backendUrl, {

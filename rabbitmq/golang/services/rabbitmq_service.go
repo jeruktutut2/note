@@ -23,8 +23,6 @@ func NewRabbitmqService(channel *amqp091.Channel) RabbitmqService {
 }
 
 func (service *RabbitmqServiceImplementation) SendTextMessage(ctx context.Context, key string, message string) (response string) {
-	// fmt.Println("message from text message:", message)
-
 	messagePublish := amqp091.Publishing{
 		Headers: amqp091.Table{
 			"sample": "value",
@@ -32,7 +30,6 @@ func (service *RabbitmqServiceImplementation) SendTextMessage(ctx context.Contex
 		Body: []byte("message: " + message),
 	}
 	err := service.Channel.PublishWithContext(ctx, "notification", key, false, false, messagePublish)
-	// fmt.Println("err:", err)
 	if err != nil {
 		fmt.Println(time.Now().String(), "error when publish message:", err)
 		response = err.Error()

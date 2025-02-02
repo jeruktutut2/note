@@ -13,12 +13,6 @@ import (
 )
 
 func main() {
-	// config := &kafka.ConfigMap{
-	// 	"bootstrap.servers": "localhost:9092",
-	// 	"group.id":          "golang",
-	// 	"auto.offset.reset": "earliest",
-	// }
-
 	e := echo.New()
 	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt)
 	defer stop()
@@ -27,15 +21,6 @@ func main() {
 	defer consumer.Close()
 
 	routes.SetKafkaRoute(e)
-
-	// config := &kafka.ConfigMap{
-	// 	"bootstrap.servers": "localhost:9092",
-	// }
-	// producer, err := kafka.NewProducer(config)
-	// if err != nil {
-	// 	log.Fatalln("error creating producer:", err)
-	// }
-	// kafkaService := services.NewKafkaService(producer)
 
 	go func() {
 		if err := e.Start(":8080"); err != nil && err != http.ErrServerClosed {
