@@ -6,14 +6,14 @@ type UuidHelper interface {
 	GenerateUuidV7() (string, error)
 }
 
-type UuidHelperImplementation struct {
+type uuidHelper struct {
 }
 
 func NewUuidHelper() UuidHelper {
-	return &UuidHelperImplementation{}
+	return &uuidHelper{}
 }
 
-func (helper *UuidHelperImplementation) GenerateUuidV7() (string, error) {
+func (helper *uuidHelper) GenerateUuidV7() (string, error) {
 	uuid, err := uuid.NewV7()
 	if err != nil {
 		return "", err

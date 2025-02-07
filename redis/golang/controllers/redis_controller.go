@@ -15,17 +15,17 @@ type RedisController interface {
 	Del(c echo.Context) error
 }
 
-type RedisControllerImplementation struct {
+type redisController struct {
 	RedisService services.RedisService
 }
 
 func NewRedisController(redisService services.RedisService) RedisController {
-	return &RedisControllerImplementation{
+	return &redisController{
 		RedisService: redisService,
 	}
 }
 
-func (controller *RedisControllerImplementation) Set(c echo.Context) error {
+func (controller *redisController) Set(c echo.Context) error {
 	var createRequest modelrequests.CreateRequest
 	err := c.Bind(&createRequest)
 	if err != nil {
@@ -36,12 +36,12 @@ func (controller *RedisControllerImplementation) Set(c echo.Context) error {
 	return c.JSON(httpResponse.HttpStatusCode, httpResponse.Response)
 }
 
-func (controller *RedisControllerImplementation) Get(c echo.Context) error {
+func (controller *redisController) Get(c echo.Context) error {
 	httpResponse := controller.RedisService.Get(c.Request().Context(), "1")
 	return c.JSON(httpResponse.HttpStatusCode, httpResponse.Response)
 }
 
-func (controller *RedisControllerImplementation) Del(c echo.Context) error {
+func (controller *redisController) Del(c echo.Context) error {
 	httpResponse := controller.RedisService.Del(c.Request().Context(), "1")
 	return c.JSON(httpResponse.HttpStatusCode, httpResponse.Response)
 }

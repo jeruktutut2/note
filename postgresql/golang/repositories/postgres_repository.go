@@ -15,24 +15,24 @@ type PostgresRepository interface {
 	Delete(tx *sqlx.Tx, ctx context.Context, id int) (rowsAffected int64, err error)
 }
 
-type PostgresRepositoryImplementation struct {
+type postgresRepository struct {
 }
 
 func NewPostgresRepository() PostgresRepository {
-	return &PostgresRepositoryImplementation{}
+	return &postgresRepository{}
 }
 
-func (repository *PostgresRepositoryImplementation) Create(tx *sqlx.Tx, ctx context.Context, user modelentities.User) (id int, err error) {
+func (repository *postgresRepository) Create(tx *sqlx.Tx, ctx context.Context, user modelentities.User) (id int, err error) {
 	err = tx.GetContext(ctx, &id, `INSERT INTO users (email, password) VALUES ($1, $2) RETURNING id;`, user.Email, user.Password)
 	return
 }
 
-func (repository *PostgresRepositoryImplementation) Get(db *sqlx.DB, ctx context.Context, id int) (user modelentities.User, err error) {
+func (repository *postgresRepository) Get(db *sqlx.DB, ctx context.Context, id int) (user modelentities.User, err error) {
 	err = db.GetContext(ctx, &user, `SELECT id, email, password FROM users WHERE id = $1;`, user.Id)
 	return
 }
 
-func (repository *PostgresRepositoryImplementation) Update(tx *sqlx.Tx, ctx context.Context, user modelentities.User) (rowsAffected int64, err error) {
+func (repository *postgresRepository) Update(tx *sqlx.Tx, ctx context.Context, user modelentities.User) (rowsAffected int64, err error) {
 	result, err := tx.ExecContext(ctx, `UPDATE users SET email = $1, password = $2 WHERE id = $3;`, user.Email, user.Password, user.Id)
 	if err != nil {
 		return
@@ -40,7 +40,7 @@ func (repository *PostgresRepositoryImplementation) Update(tx *sqlx.Tx, ctx cont
 	return result.RowsAffected()
 }
 
-func (repository *PostgresRepositoryImplementation) Delete(tx *sqlx.Tx, ctx context.Context, id int) (rowsAffected int64, err error) {
+func (repository *postgresRepository) Delete(tx *sqlx.Tx, ctx context.Context, id int) (rowsAffected int64, err error) {
 	result, err := tx.ExecContext(ctx, `DELETE FROM users WHERE id = $1;`, id)
 	if err != nil {
 		return

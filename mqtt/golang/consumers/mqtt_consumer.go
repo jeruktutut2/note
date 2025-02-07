@@ -9,7 +9,7 @@ import (
 type MqttConsumer interface {
 }
 
-type MqttConsumerImplementation struct {
+type mqttConsumer struct {
 }
 
 func NewMqttConsumer(client mqtt.Client) MqttConsumer {
@@ -19,5 +19,5 @@ func NewMqttConsumer(client mqtt.Client) MqttConsumer {
 	})
 	token.Wait()
 	fmt.Println("subscribed to test/topic")
-	return &MqttConsumerImplementation{}
+	return &mqttConsumer{}
 }

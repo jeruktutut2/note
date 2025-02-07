@@ -14,7 +14,7 @@ type TestService interface {
 	TestWithoutTx(ctx context.Context) (result string)
 }
 
-type TestServiceImplementation struct {
+type testService struct {
 	PostgresUtil    utils.PostgresUtil
 	Test1Repository repositories.Test1Repository
 	Test2Repository repositories.Test2Repository
@@ -22,7 +22,7 @@ type TestServiceImplementation struct {
 }
 
 func NewTestService(postgresUtil utils.PostgresUtil, test1Repository repositories.Test1Repository, test2Repository repositories.Test2Repository, test3Repository repositories.Test3Repository) TestService {
-	return &TestServiceImplementation{
+	return &testService{
 		PostgresUtil:    postgresUtil,
 		Test1Repository: test1Repository,
 		Test2Repository: test2Repository,
@@ -30,7 +30,7 @@ func NewTestService(postgresUtil utils.PostgresUtil, test1Repository repositorie
 	}
 }
 
-func (service *TestServiceImplementation) TestWithTx(ctx context.Context) (result string) {
+func (service *testService) TestWithTx(ctx context.Context) (result string) {
 	tx, err := service.PostgresUtil.BeginTxx(ctx, &sql.TxOptions{})
 	if err != nil {
 		return ""
@@ -99,7 +99,7 @@ func (service *TestServiceImplementation) TestWithTx(ctx context.Context) (resul
 	return "mantap"
 }
 
-func (service *TestServiceImplementation) TestWithoutTx(ctx context.Context) (result string) {
+func (service *testService) TestWithoutTx(ctx context.Context) (result string) {
 	var test1 modelentities.Test1
 	test1.Test = "test 1"
 	rowsAffected, err := service.Test1Repository.CreateWithDb(service.PostgresUtil.GetDb(), ctx, test1)

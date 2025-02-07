@@ -12,17 +12,17 @@ type RabbitmqConsumer interface {
 	ReadTextMessage()
 }
 
-type RabbitmqConsumerImplementation struct {
+type rabbitmqConsumer struct {
 	Channel *amqp091.Channel
 }
 
 func NewRabbitmqConsumer(channel *amqp091.Channel) RabbitmqConsumer {
-	return &RabbitmqConsumerImplementation{
+	return &rabbitmqConsumer{
 		Channel: channel,
 	}
 }
 
-func (consumer *RabbitmqConsumerImplementation) ReadTextMessage() {
+func (consumer *rabbitmqConsumer) ReadTextMessage() {
 	go func() {
 		ctx := context.Background()
 		textMessageDeliverys, err := consumer.Channel.ConsumeWithContext(ctx, "text-message", "text-message-consumer", true, false, false, false, nil)

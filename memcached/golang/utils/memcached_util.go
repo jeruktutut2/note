@@ -12,7 +12,7 @@ type MemcachedUtil interface {
 	Close()
 }
 
-type MemcachedUtilImplementation struct {
+type memcachedUtil struct {
 	Client *memcache.Client
 }
 
@@ -27,16 +27,16 @@ func NewMemcachedUtil() MemcachedUtil {
 		log.Fatalln("error when pinging:", err)
 	}
 	println(time.Now().String(), "memcached: pinged")
-	return &MemcachedUtilImplementation{
+	return &memcachedUtil{
 		Client: client,
 	}
 }
 
-func (util *MemcachedUtilImplementation) GetClient() *memcache.Client {
+func (util *memcachedUtil) GetClient() *memcache.Client {
 	return util.Client
 }
 
-func (util *MemcachedUtilImplementation) Close() {
+func (util *memcachedUtil) Close() {
 	println(time.Now().String(), "memcached: closing")
 	err := util.Client.Close()
 	if err != nil {

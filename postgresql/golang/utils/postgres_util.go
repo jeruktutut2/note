@@ -17,7 +17,7 @@ type PostgresUtil interface {
 	CommitOrRollback(tx *sqlx.Tx, err error) error
 }
 
-type PostgresUtilImplementation struct {
+type postgresUtil struct {
 	db *sqlx.DB
 }
 
@@ -41,20 +41,20 @@ func NewPostgresUtil(host string, username string, password string, database str
 	}
 	println(time.Now().String(), "postgres: pinged to", host, ":", port)
 
-	return &PostgresUtilImplementation{
+	return &postgresUtil{
 		db: db,
 	}
 }
 
-func (util *PostgresUtilImplementation) GetDb() *sqlx.DB {
+func (util *postgresUtil) GetDb() *sqlx.DB {
 	return util.db
 }
 
-func (util *PostgresUtilImplementation) BeginTxx(ctx context.Context, options *sql.TxOptions) (*sqlx.Tx, error) {
+func (util *postgresUtil) BeginTxx(ctx context.Context, options *sql.TxOptions) (*sqlx.Tx, error) {
 	return util.db.BeginTxx(ctx, options)
 }
 
-func (util *PostgresUtilImplementation) Close(host string, port string) {
+func (util *postgresUtil) Close(host string, port string) {
 	println(time.Now().String(), "postgres: closing to", host, ":", port)
 	err := util.db.Close()
 	if err != nil {
@@ -63,7 +63,7 @@ func (util *PostgresUtilImplementation) Close(host string, port string) {
 	println(time.Now().String(), "postgres: closed to", host, ":", port)
 }
 
-func (util *PostgresUtilImplementation) CommitOrRollback(tx *sqlx.Tx, err error) error {
+func (util *postgresUtil) CommitOrRollback(tx *sqlx.Tx, err error) error {
 	if err == nil {
 		err = tx.Commit()
 		if err != nil && err != sql.ErrTxDone {

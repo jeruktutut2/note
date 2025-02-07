@@ -13,7 +13,7 @@ type MqttUtil interface {
 	Close()
 }
 
-type MqttUtilImplementation struct {
+type mqttUtil struct {
 	Client mqtt.Client
 }
 
@@ -37,16 +37,16 @@ func NewMqttUtil() MqttUtil {
 	}
 	println(time.Now().String(), "mqtt: connected")
 
-	return &MqttUtilImplementation{
+	return &mqttUtil{
 		Client: client,
 	}
 }
 
-func (util *MqttUtilImplementation) GetClient() mqtt.Client {
+func (util *mqttUtil) GetClient() mqtt.Client {
 	return util.Client
 }
 
-func (util *MqttUtilImplementation) Close() {
+func (util *mqttUtil) Close() {
 	fmt.Println("mqtt: closing")
 	util.Client.Disconnect(250)
 	fmt.Println("mqtt: closed")

@@ -16,7 +16,7 @@ type RedisUtil interface {
 	Del(ctx context.Context, key string) (int64, error)
 }
 
-type RedisUtilImplementation struct {
+type redisUtil struct {
 	Client *redis.Client
 }
 
@@ -37,16 +37,16 @@ func NewRedisUtil(host string, port string, database int) RedisUtil {
 	}
 	println(time.Now().String()+" redis: pinged to ", host+":"+port)
 
-	return &RedisUtilImplementation{
+	return &redisUtil{
 		Client: rdb,
 	}
 }
 
-func (util *RedisUtilImplementation) GetClient() *redis.Client {
+func (util *redisUtil) GetClient() *redis.Client {
 	return util.Client
 }
 
-func (util *RedisUtilImplementation) Close(host string, port string) {
+func (util *redisUtil) Close(host string, port string) {
 	println(time.Now().String()+" redis: closing to ", host+":"+port)
 	err := util.Client.Close()
 	if err != nil {
@@ -55,14 +55,14 @@ func (util *RedisUtilImplementation) Close(host string, port string) {
 	println(time.Now().String()+" redis: closed to ", host+":"+port)
 }
 
-func (util *RedisUtilImplementation) Set(ctx context.Context, key string, value interface{}, expiration time.Duration) (string, error) {
+func (util *redisUtil) Set(ctx context.Context, key string, value interface{}, expiration time.Duration) (string, error) {
 	return util.Client.Set(ctx, key, value, expiration).Result()
 }
 
-func (util *RedisUtilImplementation) Get(ctx context.Context, key string) (string, error) {
+func (util *redisUtil) Get(ctx context.Context, key string) (string, error) {
 	return util.Client.Get(ctx, key).Result()
 }
 
-func (util *RedisUtilImplementation) Del(ctx context.Context, key string) (int64, error) {
+func (util *redisUtil) Del(ctx context.Context, key string) (int64, error) {
 	return util.Client.Del(ctx, key).Result()
 }

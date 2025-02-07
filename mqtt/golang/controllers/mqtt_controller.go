@@ -11,17 +11,17 @@ type MqttController interface {
 	SendMessage(c echo.Context) error
 }
 
-type MqttControllerImplementation struct {
+type mqttController struct {
 	MqttService services.MqttService
 }
 
 func NewMqttController(mqttService services.MqttService) MqttController {
-	return &MqttControllerImplementation{
+	return &mqttController{
 		MqttService: mqttService,
 	}
 }
 
-func (controller *MqttControllerImplementation) SendMessage(c echo.Context) error {
+func (controller *mqttController) SendMessage(c echo.Context) error {
 	message := c.QueryParam("message")
 	response := controller.MqttService.SendMessage(message)
 	return c.JSON(http.StatusOK, map[string]interface{}{

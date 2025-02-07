@@ -25,21 +25,21 @@ type MongodbService interface {
 	DeleteMany(ctx context.Context) (httpResponse modelresponses.HttpResponse)
 }
 
-type MongodbServiceImplementation struct {
+type mongodbService struct {
 	MongoUtil         utils.MongoUtil
 	UuidHelper        helpers.UuidHelper
 	MongodbRepository repositories.MongodbRepository
 }
 
 func NewMongodbService(mongoUtil utils.MongoUtil, uuidHelper helpers.UuidHelper, mongodbRepository repositories.MongodbRepository) MongodbService {
-	return &MongodbServiceImplementation{
+	return &mongodbService{
 		MongoUtil:         mongoUtil,
 		UuidHelper:        uuidHelper,
 		MongodbRepository: mongodbRepository,
 	}
 }
 
-func (service *MongodbServiceImplementation) InsertOne(ctx context.Context, createRequest modelrequests.CreateRequest) (httpResponse modelresponses.HttpResponse) {
+func (service *mongodbService) InsertOne(ctx context.Context, createRequest modelrequests.CreateRequest) (httpResponse modelresponses.HttpResponse) {
 	id, err := service.UuidHelper.GenerateUuidV7()
 	if err != nil {
 		fmt.Println("error when generating uuidv7", err)
@@ -57,7 +57,7 @@ func (service *MongodbServiceImplementation) InsertOne(ctx context.Context, crea
 	return modelresponses.SetHttpResponse(http.StatusCreated, user, []modelresponses.Error{})
 }
 
-func (service *MongodbServiceImplementation) InsertMany(ctx context.Context, createRequests []modelrequests.CreateRequest) (httpResponse modelresponses.HttpResponse) {
+func (service *mongodbService) InsertMany(ctx context.Context, createRequests []modelrequests.CreateRequest) (httpResponse modelresponses.HttpResponse) {
 	var users []modelentities.User
 	for _, createRequest := range createRequests {
 		id, err := service.UuidHelper.GenerateUuidV7()
@@ -80,7 +80,7 @@ func (service *MongodbServiceImplementation) InsertMany(ctx context.Context, cre
 	return modelresponses.SetHttpResponse(http.StatusCreated, users, []modelresponses.Error{})
 }
 
-func (service *MongodbServiceImplementation) FindOne(ctx context.Context, email string) (httpResponse modelresponses.HttpResponse) {
+func (service *mongodbService) FindOne(ctx context.Context, email string) (httpResponse modelresponses.HttpResponse) {
 	user, err := service.MongodbRepository.FindOne(service.MongoUtil.GetDb(), ctx, email)
 	if err != nil {
 		fmt.Println("error when finding one:", err)
@@ -92,7 +92,7 @@ func (service *MongodbServiceImplementation) FindOne(ctx context.Context, email 
 	return modelresponses.SetHttpResponse(http.StatusOK, user, []modelresponses.Error{})
 }
 
-func (service *MongodbServiceImplementation) Find(ctx context.Context, email string) (httpResponse modelresponses.HttpResponse) {
+func (service *mongodbService) Find(ctx context.Context, email string) (httpResponse modelresponses.HttpResponse) {
 	users, err := service.MongodbRepository.Find(service.MongoUtil.GetDb(), ctx, email)
 	if err != nil {
 		fmt.Println("error when finding by email:", err)
@@ -104,7 +104,7 @@ func (service *MongodbServiceImplementation) Find(ctx context.Context, email str
 	return modelresponses.SetHttpResponse(http.StatusOK, users, []modelresponses.Error{})
 }
 
-func (service *MongodbServiceImplementation) UpdateOne(ctx context.Context, updateRequest modelrequests.UpdateRequest) (httpResponse modelresponses.HttpResponse) {
+func (service *mongodbService) UpdateOne(ctx context.Context, updateRequest modelrequests.UpdateRequest) (httpResponse modelresponses.HttpResponse) {
 	var user modelentities.User
 	user.Id = updateRequest.Id
 	user.Email = updateRequest.Email
@@ -120,7 +120,7 @@ func (service *MongodbServiceImplementation) UpdateOne(ctx context.Context, upda
 	return modelresponses.SetHttpResponse(http.StatusOK, user, []modelresponses.Error{})
 }
 
-func (service *MongodbServiceImplementation) UpdateById(ctx context.Context, id string) (httpResponse modelresponses.HttpResponse) {
+func (service *mongodbService) UpdateById(ctx context.Context, id string) (httpResponse modelresponses.HttpResponse) {
 	rowsAffected, err := service.MongodbRepository.UpdateById(service.MongoUtil.GetDb(), ctx, id)
 	if err != nil {
 		fmt.Println("error when updating by id:", err)
@@ -132,7 +132,7 @@ func (service *MongodbServiceImplementation) UpdateById(ctx context.Context, id 
 	return modelresponses.SetMessageHttpResponse(http.StatusOK, "update by id")
 }
 
-func (service *MongodbServiceImplementation) DeleteOne(ctx context.Context, id string) (httpResponse modelresponses.HttpResponse) {
+func (service *mongodbService) DeleteOne(ctx context.Context, id string) (httpResponse modelresponses.HttpResponse) {
 	deletedCount, err := service.MongodbRepository.DeleteOne(service.MongoUtil.GetDb(), ctx, id)
 	if err != nil {
 		fmt.Println("error when delete one:", err)
@@ -144,7 +144,7 @@ func (service *MongodbServiceImplementation) DeleteOne(ctx context.Context, id s
 	return modelresponses.SetMessageHttpResponse(http.StatusNoContent, "successfully delete one")
 }
 
-func (service *MongodbServiceImplementation) DeleteMany(ctx context.Context) (httpResponse modelresponses.HttpResponse) {
+func (service *mongodbService) DeleteMany(ctx context.Context) (httpResponse modelresponses.HttpResponse) {
 	_, err := service.MongodbRepository.DeleteMany(service.MongoUtil.GetDb(), ctx)
 	if err != nil {
 		fmt.Println("error when delete one:", err)

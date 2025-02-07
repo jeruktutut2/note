@@ -11,7 +11,7 @@ type KafkaConsumer interface {
 	Close()
 }
 
-type KafkaConsumerImplementation struct {
+type kafkaConsumer struct {
 	Consumer *kafka.Consumer
 }
 
@@ -49,12 +49,12 @@ func NewKafkaConsumer(ctx context.Context) KafkaConsumer {
 	}()
 
 	log.Println("listening consumer text-message")
-	return &KafkaConsumerImplementation{
+	return &kafkaConsumer{
 		Consumer: consumer,
 	}
 }
 
-func (consumer *KafkaConsumerImplementation) Close() {
+func (consumer *kafkaConsumer) Close() {
 	err := consumer.Consumer.Close()
 	if err != nil {
 		log.Fatalln("error when closing kafka consumer:", err)

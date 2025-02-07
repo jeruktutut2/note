@@ -13,17 +13,17 @@ type MemcachedService interface {
 	Delete(key string) (response string)
 }
 
-type MemcachedServiceImplementation struct {
+type memcachedService struct {
 	MemcachedUtil utils.MemcachedUtil
 }
 
 func NewMemcachedService(memcachedUtil utils.MemcachedUtil) MemcachedService {
-	return &MemcachedServiceImplementation{
+	return &memcachedService{
 		MemcachedUtil: memcachedUtil,
 	}
 }
 
-func (service *MemcachedServiceImplementation) Set(key string, value string) (response string) {
+func (service *memcachedService) Set(key string, value string) (response string) {
 	err := service.MemcachedUtil.GetClient().Set(&memcache.Item{Key: key, Value: []byte(value)})
 	if err != nil {
 		fmt.Println("error when saving:", err)
@@ -32,7 +32,7 @@ func (service *MemcachedServiceImplementation) Set(key string, value string) (re
 	return
 }
 
-func (service *MemcachedServiceImplementation) Get(key string) (response string) {
+func (service *memcachedService) Get(key string) (response string) {
 	item, err := service.MemcachedUtil.GetClient().Get(key)
 	if err != nil {
 		if err == memcache.ErrCacheMiss {
@@ -47,7 +47,7 @@ func (service *MemcachedServiceImplementation) Get(key string) (response string)
 	return
 }
 
-func (service *MemcachedServiceImplementation) Delete(key string) (response string) {
+func (service *memcachedService) Delete(key string) (response string) {
 	err := service.MemcachedUtil.GetClient().Delete(key)
 	if err != nil {
 		if err == memcache.ErrCacheMiss {

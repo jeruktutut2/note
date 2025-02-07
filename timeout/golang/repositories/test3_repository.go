@@ -2,8 +2,9 @@ package repositories
 
 import (
 	"context"
-	"github.com/jmoiron/sqlx"
 	modelentities "timeout/models/entities"
+
+	"github.com/jmoiron/sqlx"
 )
 
 type Test3Repository interface {
@@ -13,24 +14,24 @@ type Test3Repository interface {
 	CreateWithDb(db *sqlx.DB, ctx context.Context, test3 modelentities.Test3) (rowsAffected int64, err error)
 }
 
-type Test3RepositoryImplementation struct {
+type test3Repository struct {
 }
 
 func NewTest3Repository() Test3Repository {
-	return &Test3RepositoryImplementation{}
+	return &test3Repository{}
 }
 
-func (repository *Test3RepositoryImplementation) Sleep(tx *sqlx.Tx, ctx context.Context, second int) (result string, err error) {
+func (repository *test3Repository) Sleep(tx *sqlx.Tx, ctx context.Context, second int) (result string, err error) {
 	err = tx.GetContext(ctx, &result, `SELECT PG_SLEEP($1);`, second)
 	return
 }
 
-func (repository *Test3RepositoryImplementation) SleepWithDb(db *sqlx.DB, ctx context.Context, second int) (result string, err error) {
+func (repository *test3Repository) SleepWithDb(db *sqlx.DB, ctx context.Context, second int) (result string, err error) {
 	err = db.GetContext(ctx, &result, `SELECT PG_SLEEP($1);`, second)
 	return
 }
 
-func (repository Test3RepositoryImplementation) Create(tx *sqlx.Tx, ctx context.Context, test3 modelentities.Test3) (rowsAffected int64, err error) {
+func (repository *test3Repository) Create(tx *sqlx.Tx, ctx context.Context, test3 modelentities.Test3) (rowsAffected int64, err error) {
 	result, err := tx.ExecContext(ctx, `INSERT INTO test3s(test) VALUES($1);`, test3.Test)
 	if err != nil {
 		return
@@ -38,7 +39,7 @@ func (repository Test3RepositoryImplementation) Create(tx *sqlx.Tx, ctx context.
 	return result.RowsAffected()
 }
 
-func (repository *Test3RepositoryImplementation) CreateWithDb(db *sqlx.DB, ctx context.Context, test3 modelentities.Test3) (rowsAffected int64, err error) {
+func (repository *test3Repository) CreateWithDb(db *sqlx.DB, ctx context.Context, test3 modelentities.Test3) (rowsAffected int64, err error) {
 	result, err := db.ExecContext(ctx, `INSERT INTO test3s(test) VALUES($1);`, test3.Test)
 	if err != nil {
 		return

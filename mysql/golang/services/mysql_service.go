@@ -18,19 +18,19 @@ type MysqlService interface {
 	Delete(ctx context.Context, id int) (httpResponse modelresponses.HttpResponse)
 }
 
-type MysqlServiceImplementation struct {
+type mysqlService struct {
 	MysqlUtil       utils.MysqlUtil
 	MysqlRepository repositories.MysqlRepository
 }
 
 func NewMysqlService(mysqlUtil utils.MysqlUtil, mysqlRepository repositories.MysqlRepository) MysqlService {
-	return &MysqlServiceImplementation{
+	return &mysqlService{
 		MysqlUtil:       mysqlUtil,
 		MysqlRepository: mysqlRepository,
 	}
 }
 
-func (service *MysqlServiceImplementation) Create(ctx context.Context, createRequest modelrequests.CreateRequest) (httpResponse modelresponses.HttpResponse) {
+func (service *mysqlService) Create(ctx context.Context, createRequest modelrequests.CreateRequest) (httpResponse modelresponses.HttpResponse) {
 	tx, err := service.MysqlUtil.BeginTxx(ctx, &sql.TxOptions{})
 	if err != nil {
 		return modelresponses.SetHttpResponse(http.StatusInternalServerError, nil, []modelresponses.Error{{Field: "message", Message: "internal server error"}})
@@ -56,7 +56,7 @@ func (service *MysqlServiceImplementation) Create(ctx context.Context, createReq
 	return modelresponses.SetHttpResponse(http.StatusCreated, user, []modelresponses.Error{})
 }
 
-func (service *MysqlServiceImplementation) Get(ctx context.Context, id int) (httpResponse modelresponses.HttpResponse) {
+func (service *mysqlService) Get(ctx context.Context, id int) (httpResponse modelresponses.HttpResponse) {
 	user, err := service.MysqlRepository.Get(service.MysqlUtil.GetDb(), ctx, id)
 	if err != nil {
 		return modelresponses.SetHttpResponse(http.StatusInternalServerError, nil, []modelresponses.Error{{Field: "message", Message: "internal server error"}})
@@ -64,7 +64,7 @@ func (service *MysqlServiceImplementation) Get(ctx context.Context, id int) (htt
 	return modelresponses.SetHttpResponse(http.StatusCreated, user, []modelresponses.Error{})
 }
 
-func (service *MysqlServiceImplementation) Update(ctx context.Context, updateRequest modelrequests.UpdateRequest) (httpResponse modelresponses.HttpResponse) {
+func (service *mysqlService) Update(ctx context.Context, updateRequest modelrequests.UpdateRequest) (httpResponse modelresponses.HttpResponse) {
 	tx, err := service.MysqlUtil.BeginTxx(ctx, &sql.TxOptions{})
 	if err != nil {
 		return modelresponses.SetHttpResponse(http.StatusInternalServerError, nil, []modelresponses.Error{{Field: "message", Message: "internal server error"}})
@@ -90,7 +90,7 @@ func (service *MysqlServiceImplementation) Update(ctx context.Context, updateReq
 	return modelresponses.SetHttpResponse(http.StatusCreated, user, []modelresponses.Error{})
 }
 
-func (service *MysqlServiceImplementation) Delete(ctx context.Context, id int) (httpResponse modelresponses.HttpResponse) {
+func (service *mysqlService) Delete(ctx context.Context, id int) (httpResponse modelresponses.HttpResponse) {
 	tx, err := service.MysqlUtil.BeginTxx(ctx, &sql.TxOptions{})
 	if err != nil {
 		return modelresponses.SetHttpResponse(http.StatusInternalServerError, nil, []modelresponses.Error{{Field: "message", Message: "internal server error"}})

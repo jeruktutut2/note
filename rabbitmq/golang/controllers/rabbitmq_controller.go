@@ -11,17 +11,17 @@ type RabbitmqController interface {
 	SendTextMessage(c echo.Context) error
 }
 
-type RabbitmqControllerImplementation struct {
+type rabbitmqController struct {
 	RabbitmqService services.RabbitmqService
 }
 
 func NewRabbitmqController(rabbitmqService services.RabbitmqService) RabbitmqController {
-	return &RabbitmqControllerImplementation{
+	return &rabbitmqController{
 		RabbitmqService: rabbitmqService,
 	}
 }
 
-func (controller *RabbitmqControllerImplementation) SendTextMessage(c echo.Context) error {
+func (controller *rabbitmqController) SendTextMessage(c echo.Context) error {
 	key := c.QueryParam("key")
 	message := c.QueryParam("message")
 	response := controller.RabbitmqService.SendTextMessage(c.Request().Context(), key, message)

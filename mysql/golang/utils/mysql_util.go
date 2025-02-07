@@ -17,7 +17,7 @@ type MysqlUtil interface {
 	CommitOrRollback(tx *sqlx.Tx, err error) error
 }
 
-type MysqlUtilImplementation struct {
+type mysqlUtil struct {
 	db *sqlx.DB
 }
 
@@ -40,20 +40,20 @@ func NewMysqlUtil(host string, username string, password string, database string
 	}
 	println(time.Now().String(), "mysql: pinged to", host, ":", port)
 
-	return &MysqlUtilImplementation{
+	return &mysqlUtil{
 		db: db,
 	}
 }
 
-func (util *MysqlUtilImplementation) GetDb() *sqlx.DB {
+func (util *mysqlUtil) GetDb() *sqlx.DB {
 	return util.db
 }
 
-func (util *MysqlUtilImplementation) BeginTxx(ctx context.Context, options *sql.TxOptions) (*sqlx.Tx, error) {
+func (util *mysqlUtil) BeginTxx(ctx context.Context, options *sql.TxOptions) (*sqlx.Tx, error) {
 	return util.db.BeginTxx(ctx, options)
 }
 
-func (util *MysqlUtilImplementation) Close(host string, port string) {
+func (util *mysqlUtil) Close(host string, port string) {
 	println(time.Now().String(), "mysql: closing to", host, ":", port)
 	err := util.db.Close()
 	if err != nil {
@@ -62,7 +62,7 @@ func (util *MysqlUtilImplementation) Close(host string, port string) {
 	println(time.Now().String(), "mysql: closed to", host, ":", port)
 }
 
-func (util *MysqlUtilImplementation) CommitOrRollback(tx *sqlx.Tx, err error) error {
+func (util *mysqlUtil) CommitOrRollback(tx *sqlx.Tx, err error) error {
 	if err == nil {
 		err = tx.Commit()
 		if err != nil && err != sql.ErrTxDone {

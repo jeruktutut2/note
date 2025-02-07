@@ -19,17 +19,17 @@ type MongodbController interface {
 	DeleteMany(c echo.Context) error
 }
 
-type MongodbControllerImplementation struct {
+type mongodbController struct {
 	MongodbService services.MongodbService
 }
 
 func NewMongodbController(mongodbService services.MongodbService) MongodbController {
-	return &MongodbControllerImplementation{
+	return &mongodbController{
 		MongodbService: mongodbService,
 	}
 }
 
-func (controller *MongodbControllerImplementation) InsertOne(c echo.Context) error {
+func (controller *mongodbController) InsertOne(c echo.Context) error {
 	var createRequest modelrequests.CreateRequest
 	err := c.Bind(&createRequest)
 	if err != nil {
@@ -41,7 +41,7 @@ func (controller *MongodbControllerImplementation) InsertOne(c echo.Context) err
 	return c.JSON(httpResponse.HttpStatusCode, httpResponse.Response)
 }
 
-func (controller *MongodbControllerImplementation) InsertMany(c echo.Context) error {
+func (controller *mongodbController) InsertMany(c echo.Context) error {
 	var createRequests []modelrequests.CreateRequest
 	err := c.Bind(&createRequests)
 	if err != nil {
@@ -53,19 +53,19 @@ func (controller *MongodbControllerImplementation) InsertMany(c echo.Context) er
 	return c.JSON(httpResponse.HttpStatusCode, httpResponse.Response)
 }
 
-func (controller *MongodbControllerImplementation) FindOne(c echo.Context) error {
+func (controller *mongodbController) FindOne(c echo.Context) error {
 	email := c.QueryParam("email")
 	httpResponse := controller.MongodbService.FindOne(c.Request().Context(), email)
 	return c.JSON(httpResponse.HttpStatusCode, httpResponse.Response)
 }
 
-func (controller *MongodbControllerImplementation) Find(c echo.Context) error {
+func (controller *mongodbController) Find(c echo.Context) error {
 	email := c.QueryParam("email")
 	httpResponse := controller.MongodbService.Find(c.Request().Context(), email)
 	return c.JSON(httpResponse.HttpStatusCode, httpResponse.Response)
 }
 
-func (controller *MongodbControllerImplementation) UpdateOne(c echo.Context) error {
+func (controller *mongodbController) UpdateOne(c echo.Context) error {
 	var updateRequest modelrequests.UpdateRequest
 	err := c.Bind(&updateRequest)
 	if err != nil {
@@ -77,19 +77,19 @@ func (controller *MongodbControllerImplementation) UpdateOne(c echo.Context) err
 	return c.JSON(httpResponse.HttpStatusCode, httpResponse.Response)
 }
 
-func (controller *MongodbControllerImplementation) UpdateById(c echo.Context) error {
+func (controller *mongodbController) UpdateById(c echo.Context) error {
 	id := c.Param("id")
 	httpResponse := controller.MongodbService.UpdateById(c.Request().Context(), id)
 	return c.JSON(httpResponse.HttpStatusCode, httpResponse.Response)
 }
 
-func (controller *MongodbControllerImplementation) DeleteOne(c echo.Context) error {
+func (controller *mongodbController) DeleteOne(c echo.Context) error {
 	id := c.Param("id")
 	httpResponse := controller.MongodbService.DeleteOne(c.Request().Context(), id)
 	return c.JSON(httpResponse.HttpStatusCode, httpResponse.Response)
 }
 
-func (controller *MongodbControllerImplementation) DeleteMany(c echo.Context) error {
+func (controller *mongodbController) DeleteMany(c echo.Context) error {
 	httpResponse := controller.MongodbService.DeleteMany(c.Request().Context())
 	return c.JSON(httpResponse.HttpStatusCode, httpResponse.Response)
 }

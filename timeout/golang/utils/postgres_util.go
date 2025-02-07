@@ -19,7 +19,7 @@ type PostgresUtil interface {
 	CommitOrRollback(tx *sqlx.Tx, err error) error
 }
 
-type PostgresUtilImplementation struct {
+type postgresUtil struct {
 	db *sqlx.DB
 }
 
@@ -66,19 +66,19 @@ func NewPostgresUtil() PostgresUtil {
 	}
 	println(time.Now().String(), "postgres: pinged to", os.Getenv("POSTGRES_HOST"), ":", os.Getenv("POSTGRES_PORT"))
 
-	return &PostgresUtilImplementation{
+	return &postgresUtil{
 		db: db,
 	}
 }
-func (util *PostgresUtilImplementation) GetDb() *sqlx.DB {
+func (util *postgresUtil) GetDb() *sqlx.DB {
 	return util.db
 }
 
-func (util *PostgresUtilImplementation) BeginTxx(ctx context.Context, options *sql.TxOptions) (*sqlx.Tx, error) {
+func (util *postgresUtil) BeginTxx(ctx context.Context, options *sql.TxOptions) (*sqlx.Tx, error) {
 	return util.db.BeginTxx(ctx, options)
 }
 
-func (util *PostgresUtilImplementation) Close() {
+func (util *postgresUtil) Close() {
 	println(time.Now().String(), "postgres: closing to", os.Getenv("POSTGRES_HOST"))
 	err := util.db.Close()
 	if err != nil {
@@ -87,7 +87,7 @@ func (util *PostgresUtilImplementation) Close() {
 	println(time.Now().String(), "postgres: closed to", os.Getenv("POSTGRES_HOST"))
 }
 
-func (util *PostgresUtilImplementation) CommitOrRollback(tx *sqlx.Tx, err error) error {
+func (util *postgresUtil) CommitOrRollback(tx *sqlx.Tx, err error) error {
 	if err == nil {
 		err = tx.Commit()
 		if err != nil && err != sql.ErrTxDone {

@@ -13,7 +13,7 @@ type RabbitmqUtil interface {
 	Close(host string, port string)
 }
 
-type RabbitmqUtilImplementation struct {
+type rabbitmqUtil struct {
 	Connection *amqp091.Connection
 	Channel    *amqp091.Channel
 }
@@ -33,21 +33,21 @@ func NewRabbitmqConnection(host string, username string, password string, port s
 	}
 	println(time.Now().String(), "rabbitmq: opened channel "+host+":"+port)
 
-	return &RabbitmqUtilImplementation{
+	return &rabbitmqUtil{
 		Connection: connection,
 		Channel:    channel,
 	}
 }
 
-func (util *RabbitmqUtilImplementation) GetConnection() *amqp091.Connection {
+func (util *rabbitmqUtil) GetConnection() *amqp091.Connection {
 	return util.Connection
 }
 
-func (util *RabbitmqUtilImplementation) GetChannel() *amqp091.Channel {
+func (util *rabbitmqUtil) GetChannel() *amqp091.Channel {
 	return util.Channel
 }
 
-func (util *RabbitmqUtilImplementation) Close(host string, port string) {
+func (util *rabbitmqUtil) Close(host string, port string) {
 	println(time.Now().String(), "rabbitmq: closing to "+host+":"+port)
 	util.Connection.Close()
 	println(time.Now().String(), "rabbitmq: closed to "+host+":"+port)

@@ -17,17 +17,17 @@ type MysqlController interface {
 	Delete(c echo.Context) error
 }
 
-type MysqlControllerImplementation struct {
+type mysqlController struct {
 	MysqlService services.MysqlService
 }
 
 func NewMysqlController(mysqlService services.MysqlService) MysqlController {
-	return &MysqlControllerImplementation{
+	return &mysqlController{
 		MysqlService: mysqlService,
 	}
 }
 
-func (controller *MysqlControllerImplementation) Create(c echo.Context) error {
+func (controller *mysqlController) Create(c echo.Context) error {
 	var createRequest modelrequests.CreateRequest
 	err := c.Bind(&createRequest)
 	if err != nil {
@@ -40,7 +40,7 @@ func (controller *MysqlControllerImplementation) Create(c echo.Context) error {
 	return c.JSON(httpResponse.HttpStatusCode, httpResponse.Response)
 }
 
-func (controller *MysqlControllerImplementation) Get(c echo.Context) error {
+func (controller *mysqlController) Get(c echo.Context) error {
 	idParam := c.Param("id")
 	id, err := strconv.Atoi(idParam)
 	if err != nil {
@@ -51,7 +51,7 @@ func (controller *MysqlControllerImplementation) Get(c echo.Context) error {
 	return c.JSON(httpResponse.HttpStatusCode, httpResponse.Response)
 }
 
-func (controller *MysqlControllerImplementation) Update(c echo.Context) error {
+func (controller *mysqlController) Update(c echo.Context) error {
 	var updateRequest modelrequests.UpdateRequest
 	err := c.Bind(&updateRequest)
 	if err != nil {
@@ -62,7 +62,7 @@ func (controller *MysqlControllerImplementation) Update(c echo.Context) error {
 	return c.JSON(httpResponse.HttpStatusCode, httpResponse.Response)
 }
 
-func (controller *MysqlControllerImplementation) Delete(c echo.Context) error {
+func (controller *mysqlController) Delete(c echo.Context) error {
 	idParam := c.Param("id")
 	id, err := strconv.Atoi(idParam)
 	if err != nil {

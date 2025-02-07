@@ -2,10 +2,11 @@ package utils
 
 import (
 	"context"
-	"go.mongodb.org/mongo-driver/mongo"
-	"go.mongodb.org/mongo-driver/mongo/options"
 	"log"
 	"time"
+
+	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
 type MongoUtil interface {
@@ -13,7 +14,7 @@ type MongoUtil interface {
 	Close(host string, port string)
 }
 
-type MongoUtilImplementation struct {
+type mongoUtil struct {
 	client *mongo.Client
 	db     *mongo.Database
 }
@@ -35,17 +36,17 @@ func NewMongoDbConnection(host string, username string, password string, databas
 	}
 	println(time.Now().String(), "mongodb: pinged to", host+":"+port)
 
-	return &MongoUtilImplementation{
+	return &mongoUtil{
 		client: client,
 		db:     client.Database(database),
 	}
 }
 
-func (util *MongoUtilImplementation) GetDb() *mongo.Database {
+func (util *mongoUtil) GetDb() *mongo.Database {
 	return util.db
 }
 
-func (util *MongoUtilImplementation) Close(host string, port string) {
+func (util *mongoUtil) Close(host string, port string) {
 	println(time.Now().String(), "mongodb: closing to", host+":"+port)
 	err := util.client.Disconnect(context.Background())
 	if err != nil {

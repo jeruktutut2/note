@@ -12,17 +12,17 @@ type RabbitmqService interface {
 	SendTextMessage(ctx context.Context, key string, message string) (response string)
 }
 
-type RabbitmqServiceImplementation struct {
+type rabbitmqService struct {
 	Channel *amqp091.Channel
 }
 
 func NewRabbitmqService(channel *amqp091.Channel) RabbitmqService {
-	return &RabbitmqServiceImplementation{
+	return &rabbitmqService{
 		Channel: channel,
 	}
 }
 
-func (service *RabbitmqServiceImplementation) SendTextMessage(ctx context.Context, key string, message string) (response string) {
+func (service *rabbitmqService) SendTextMessage(ctx context.Context, key string, message string) (response string) {
 	messagePublish := amqp091.Publishing{
 		Headers: amqp091.Table{
 			"sample": "value",

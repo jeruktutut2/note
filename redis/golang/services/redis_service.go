@@ -16,17 +16,17 @@ type RedisService interface {
 	Del(ctx context.Context, key string) (httpResponse modelresponses.HttpResponse)
 }
 
-type RedisServiceImplementation struct {
+type redisService struct {
 	RedisUtil utils.RedisUtil
 }
 
 func NewRedisService(redisUtil utils.RedisUtil) RedisService {
-	return &RedisServiceImplementation{
+	return &redisService{
 		RedisUtil: redisUtil,
 	}
 }
 
-func (service *RedisServiceImplementation) Set(ctx context.Context, createRequest modelrequests.CreateRequest) (httpResponse modelresponses.HttpResponse) {
+func (service *redisService) Set(ctx context.Context, createRequest modelrequests.CreateRequest) (httpResponse modelresponses.HttpResponse) {
 	resultBytes, err := json.Marshal(createRequest)
 	if err != nil {
 		return modelresponses.SetHttpResponse(http.StatusInternalServerError, nil, []modelresponses.Error{{Field: "message", Message: "internal server error"}})
@@ -38,7 +38,7 @@ func (service *RedisServiceImplementation) Set(ctx context.Context, createReques
 	return modelresponses.SetHttpResponse(http.StatusCreated, createRequest, []modelresponses.Error{})
 }
 
-func (service *RedisServiceImplementation) Get(ctx context.Context, key string) (httpResponse modelresponses.HttpResponse) {
+func (service *redisService) Get(ctx context.Context, key string) (httpResponse modelresponses.HttpResponse) {
 	result, err := service.RedisUtil.Get(ctx, key)
 	if err != nil {
 		return modelresponses.SetHttpResponse(http.StatusInternalServerError, nil, []modelresponses.Error{{Field: "message", Message: "internal server error"}})
@@ -51,7 +51,7 @@ func (service *RedisServiceImplementation) Get(ctx context.Context, key string) 
 	return modelresponses.SetHttpResponse(http.StatusOK, createRequest, []modelresponses.Error{})
 }
 
-func (service *RedisServiceImplementation) Del(ctx context.Context, key string) (httpResponse modelresponses.HttpResponse) {
+func (service *redisService) Del(ctx context.Context, key string) (httpResponse modelresponses.HttpResponse) {
 	rowsAffected, err := service.RedisUtil.Del(ctx, key)
 	if err != nil {
 		return modelresponses.SetHttpResponse(http.StatusInternalServerError, nil, []modelresponses.Error{{Field: "message", Message: "internal server error"}})

@@ -18,19 +18,19 @@ type PostgresService interface {
 	Delete(ctx context.Context, id int) (httpResponse modelresponses.HttpResponse)
 }
 
-type PostgresServiceImplementation struct {
+type postgresService struct {
 	PostgresUtil       utils.PostgresUtil
 	PostgresRepository repositories.PostgresRepository
 }
 
 func NewPostgresService(postgresUtil utils.PostgresUtil, postgresRepository repositories.PostgresRepository) PostgresService {
-	return &PostgresServiceImplementation{
+	return &postgresService{
 		PostgresUtil:       postgresUtil,
 		PostgresRepository: postgresRepository,
 	}
 }
 
-func (service *PostgresServiceImplementation) Create(ctx context.Context, createRequest modelrequests.CreateRequest) (httpResponse modelresponses.HttpResponse) {
+func (service *postgresService) Create(ctx context.Context, createRequest modelrequests.CreateRequest) (httpResponse modelresponses.HttpResponse) {
 	tx, err := service.PostgresUtil.BeginTxx(ctx, &sql.TxOptions{})
 	if err != nil {
 		return modelresponses.SetHttpResponse(http.StatusInternalServerError, nil, []modelresponses.Error{{Field: "message", Message: "internal server error"}})
@@ -54,7 +54,7 @@ func (service *PostgresServiceImplementation) Create(ctx context.Context, create
 	return modelresponses.SetHttpResponse(http.StatusCreated, user, []modelresponses.Error{})
 }
 
-func (service *PostgresServiceImplementation) Get(ctx context.Context, id int) (httpResponse modelresponses.HttpResponse) {
+func (service *postgresService) Get(ctx context.Context, id int) (httpResponse modelresponses.HttpResponse) {
 	user, err := service.PostgresRepository.Get(service.PostgresUtil.GetDb(), ctx, id)
 	if err != nil {
 		return modelresponses.SetHttpResponse(http.StatusInternalServerError, nil, []modelresponses.Error{{Field: "message", Message: "internal server error"}})
@@ -62,7 +62,7 @@ func (service *PostgresServiceImplementation) Get(ctx context.Context, id int) (
 	return modelresponses.SetHttpResponse(http.StatusCreated, user, []modelresponses.Error{})
 }
 
-func (service *PostgresServiceImplementation) Update(ctx context.Context, updateRequest modelrequests.UpdateRequest) (httpResponse modelresponses.HttpResponse) {
+func (service *postgresService) Update(ctx context.Context, updateRequest modelrequests.UpdateRequest) (httpResponse modelresponses.HttpResponse) {
 	tx, err := service.PostgresUtil.BeginTxx(ctx, &sql.TxOptions{})
 	if err != nil {
 		return modelresponses.SetHttpResponse(http.StatusInternalServerError, nil, []modelresponses.Error{{Field: "message", Message: "internal server error"}})
@@ -88,7 +88,7 @@ func (service *PostgresServiceImplementation) Update(ctx context.Context, update
 	return modelresponses.SetHttpResponse(http.StatusCreated, user, []modelresponses.Error{})
 }
 
-func (service *PostgresServiceImplementation) Delete(ctx context.Context, id int) (httpResponse modelresponses.HttpResponse) {
+func (service *postgresService) Delete(ctx context.Context, id int) (httpResponse modelresponses.HttpResponse) {
 	tx, err := service.PostgresUtil.BeginTxx(ctx, &sql.TxOptions{})
 	if err != nil {
 		return modelresponses.SetHttpResponse(http.StatusInternalServerError, nil, []modelresponses.Error{{Field: "message", Message: "internal server error"}})

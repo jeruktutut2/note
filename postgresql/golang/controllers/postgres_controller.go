@@ -17,17 +17,17 @@ type PostgresController interface {
 	Delete(c echo.Context) error
 }
 
-type PostgresControllerImplementation struct {
+type postgresController struct {
 	PostgresService services.PostgresService
 }
 
 func NewPostgresController(postgresService services.PostgresService) PostgresController {
-	return &PostgresControllerImplementation{
+	return &postgresController{
 		PostgresService: postgresService,
 	}
 }
 
-func (controller *PostgresControllerImplementation) Create(c echo.Context) error {
+func (controller *postgresController) Create(c echo.Context) error {
 	var createRequest modelrequests.CreateRequest
 	err := c.Bind(&createRequest)
 	if err != nil {
@@ -40,7 +40,7 @@ func (controller *PostgresControllerImplementation) Create(c echo.Context) error
 	return c.JSON(httpResponse.HttpStatusCode, httpResponse.Response)
 }
 
-func (controller *PostgresControllerImplementation) Get(c echo.Context) error {
+func (controller *postgresController) Get(c echo.Context) error {
 	idParam := c.Param("id")
 	id, err := strconv.Atoi(idParam)
 	if err != nil {
@@ -51,7 +51,7 @@ func (controller *PostgresControllerImplementation) Get(c echo.Context) error {
 	return c.JSON(httpResponse.HttpStatusCode, httpResponse.Response)
 }
 
-func (controller *PostgresControllerImplementation) Update(c echo.Context) error {
+func (controller *postgresController) Update(c echo.Context) error {
 	var updateRequest modelrequests.UpdateRequest
 	err := c.Bind(&updateRequest)
 	if err != nil {
@@ -62,7 +62,7 @@ func (controller *PostgresControllerImplementation) Update(c echo.Context) error
 	return c.JSON(httpResponse.HttpStatusCode, httpResponse.Response)
 }
 
-func (controller *PostgresControllerImplementation) Delete(c echo.Context) error {
+func (controller *postgresController) Delete(c echo.Context) error {
 	idParam := c.Param("id")
 	id, err := strconv.Atoi(idParam)
 	if err != nil {

@@ -11,17 +11,17 @@ type KafkaController interface {
 	SendMessage(c echo.Context) error
 }
 
-type KafkaControllerImplementation struct {
+type kafkaController struct {
 	KafkaService services.KafkaService
 }
 
 func NewKafkaController(kafkaService services.KafkaService) KafkaController {
-	return &KafkaControllerImplementation{
+	return &kafkaController{
 		KafkaService: kafkaService,
 	}
 }
 
-func (controller *KafkaControllerImplementation) SendMessage(c echo.Context) error {
+func (controller *kafkaController) SendMessage(c echo.Context) error {
 	textMessage := c.QueryParam("message")
 	response := controller.KafkaService.SendMessage(c.Request().Context(), textMessage)
 	return c.JSON(http.StatusOK, map[string]interface{}{

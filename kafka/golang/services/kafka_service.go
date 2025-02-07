@@ -10,17 +10,17 @@ type KafkaService interface {
 	SendMessage(ctx context.Context, message string) (response string)
 }
 
-type KafkaServiceImplementation struct {
+type kafkaService struct {
 	Producer *kafka.Producer
 }
 
 func NewKafkaService(producer *kafka.Producer) KafkaService {
-	return &KafkaServiceImplementation{
+	return &kafkaService{
 		Producer: producer,
 	}
 }
 
-func (service *KafkaServiceImplementation) SendMessage(ctx context.Context, message string) (response string) {
+func (service *kafkaService) SendMessage(ctx context.Context, message string) (response string) {
 	topic := "text-message"
 	msg := &kafka.Message{
 		TopicPartition: kafka.TopicPartition{

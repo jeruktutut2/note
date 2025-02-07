@@ -19,19 +19,19 @@ type MongodbRepository interface {
 	DeleteMany(db *mongo.Database, ctx context.Context) (deletedCount int64, err error)
 }
 
-type MongodbRepositoryImplementation struct {
+type mongodbRepository struct {
 }
 
 func NewMongodbRepository() MongodbRepository {
-	return &MongodbRepositoryImplementation{}
+	return &mongodbRepository{}
 }
 
-func (repository *MongodbRepositoryImplementation) InsertOne(db *mongo.Database, ctx context.Context, user modelentities.User) (err error) {
+func (repository *mongodbRepository) InsertOne(db *mongo.Database, ctx context.Context, user modelentities.User) (err error) {
 	_, err = db.Collection("users").InsertOne(ctx, user, nil)
 	return
 }
 
-func (repository *MongodbRepositoryImplementation) InsertMany(db *mongo.Database, ctx context.Context, users []modelentities.User) (err error) {
+func (repository *mongodbRepository) InsertMany(db *mongo.Database, ctx context.Context, users []modelentities.User) (err error) {
 	var documents []interface{}
 	for _, user := range users {
 		documents = append(documents, user)
@@ -40,12 +40,12 @@ func (repository *MongodbRepositoryImplementation) InsertMany(db *mongo.Database
 	return
 }
 
-func (repository *MongodbRepositoryImplementation) FindOne(db *mongo.Database, ctx context.Context, email string) (user modelentities.User, err error) {
+func (repository *mongodbRepository) FindOne(db *mongo.Database, ctx context.Context, email string) (user modelentities.User, err error) {
 	err = db.Collection("users").FindOne(ctx, bson.M{"email": email}, nil).Decode(&user)
 	return
 }
 
-func (repository *MongodbRepositoryImplementation) Find(db *mongo.Database, ctx context.Context, email string) (users []modelentities.User, err error) {
+func (repository *mongodbRepository) Find(db *mongo.Database, ctx context.Context, email string) (users []modelentities.User, err error) {
 	cursor, err := db.Collection("users").Find(ctx, bson.M{"email": email}, nil)
 	if err != nil {
 		return
@@ -72,7 +72,7 @@ func (repository *MongodbRepositoryImplementation) Find(db *mongo.Database, ctx 
 	return
 }
 
-func (repository *MongodbRepositoryImplementation) UpdateOne(db *mongo.Database, ctx context.Context, user modelentities.User) (rowsAffected int64, err error) {
+func (repository *mongodbRepository) UpdateOne(db *mongo.Database, ctx context.Context, user modelentities.User) (rowsAffected int64, err error) {
 	result, err := db.Collection("users").UpdateOne(ctx, bson.M{"_id": user.Id}, bson.M{"$set": bson.M{"email": user.Email, "password": user.Password}}, nil)
 	if err != nil {
 		return
@@ -81,7 +81,7 @@ func (repository *MongodbRepositoryImplementation) UpdateOne(db *mongo.Database,
 	return
 }
 
-func (repository *MongodbRepositoryImplementation) UpdateById(db *mongo.Database, ctx context.Context, id string) (rowsAffected int64, err error) {
+func (repository *mongodbRepository) UpdateById(db *mongo.Database, ctx context.Context, id string) (rowsAffected int64, err error) {
 	result, err := db.Collection("users").UpdateByID(ctx, id, bson.M{"$set": bson.M{"email": "email1@email.com", "password": "password@A2"}}, nil)
 	if err != nil {
 		return
@@ -90,7 +90,7 @@ func (repository *MongodbRepositoryImplementation) UpdateById(db *mongo.Database
 	return
 }
 
-func (repository *MongodbRepositoryImplementation) DeleteOne(db *mongo.Database, ctx context.Context, id string) (deletedCount int64, err error) {
+func (repository *mongodbRepository) DeleteOne(db *mongo.Database, ctx context.Context, id string) (deletedCount int64, err error) {
 	result, err := db.Collection("users").DeleteOne(ctx, bson.M{"_id": id}, nil)
 	if err != nil {
 		return
@@ -99,7 +99,7 @@ func (repository *MongodbRepositoryImplementation) DeleteOne(db *mongo.Database,
 	return
 }
 
-func (repository *MongodbRepositoryImplementation) DeleteMany(db *mongo.Database, ctx context.Context) (deletedCount int64, err error) {
+func (repository *mongodbRepository) DeleteMany(db *mongo.Database, ctx context.Context) (deletedCount int64, err error) {
 	result, err := db.Collection("users").DeleteMany(ctx, bson.M{}, nil)
 	if err != nil {
 		return

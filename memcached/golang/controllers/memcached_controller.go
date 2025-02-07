@@ -13,17 +13,17 @@ type MemcachedController interface {
 	Delete(c echo.Context) error
 }
 
-type MemcachedControllerImplementation struct {
+type memcachedController struct {
 	MemcachedService services.MemcachedService
 }
 
 func NewMemcachedController(memcachedService services.MemcachedService) MemcachedController {
-	return &MemcachedControllerImplementation{
+	return &memcachedController{
 		MemcachedService: memcachedService,
 	}
 }
 
-func (controller *MemcachedControllerImplementation) Set(c echo.Context) error {
+func (controller *memcachedController) Set(c echo.Context) error {
 	key := c.QueryParam("key")
 	value := c.QueryParam("value")
 	response := controller.MemcachedService.Set(key, value)
@@ -32,7 +32,7 @@ func (controller *MemcachedControllerImplementation) Set(c echo.Context) error {
 	})
 }
 
-func (controller *MemcachedControllerImplementation) Get(c echo.Context) error {
+func (controller *memcachedController) Get(c echo.Context) error {
 	key := c.QueryParam("key")
 	response := controller.MemcachedService.Get(key)
 	return c.JSON(http.StatusOK, map[string]interface{}{
@@ -40,7 +40,7 @@ func (controller *MemcachedControllerImplementation) Get(c echo.Context) error {
 	})
 }
 
-func (controller *MemcachedControllerImplementation) Delete(c echo.Context) error {
+func (controller *memcachedController) Delete(c echo.Context) error {
 	key := c.QueryParam("key")
 	response := controller.MemcachedService.Delete(key)
 	return c.JSON(http.StatusOK, map[string]interface{}{

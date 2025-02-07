@@ -14,14 +14,14 @@ type MysqlRepository interface {
 	Delete(tx *sqlx.Tx, ctx context.Context, id int) (rowsAffected int64, err error)
 }
 
-type MysqlRepositoryImplementation struct {
+type mysqlRepository struct {
 }
 
 func NewMysqlRepository() MysqlRepository {
-	return &MysqlRepositoryImplementation{}
+	return &mysqlRepository{}
 }
 
-func (repository *MysqlRepositoryImplementation) Create(tx *sqlx.Tx, ctx context.Context, user modelentities.User) (rowsAffected int64, lastInsertedId int64, err error) {
+func (repository *mysqlRepository) Create(tx *sqlx.Tx, ctx context.Context, user modelentities.User) (rowsAffected int64, lastInsertedId int64, err error) {
 	result, err := tx.ExecContext(ctx, `INSERT INTO users (email, password) VALUES (?, ?);`, user.Email, user.Password)
 	if err != nil {
 		return
@@ -37,12 +37,12 @@ func (repository *MysqlRepositoryImplementation) Create(tx *sqlx.Tx, ctx context
 	return
 }
 
-func (repository *MysqlRepositoryImplementation) Get(db *sqlx.DB, ctx context.Context, id int) (user modelentities.User, err error) {
+func (repository *mysqlRepository) Get(db *sqlx.DB, ctx context.Context, id int) (user modelentities.User, err error) {
 	err = db.GetContext(ctx, &user, `SELECT id, email, password FROM users WHERE id = ?;`, user.Id)
 	return
 }
 
-func (repository *MysqlRepositoryImplementation) Update(tx *sqlx.Tx, ctx context.Context, user modelentities.User) (rowsAffected int64, err error) {
+func (repository *mysqlRepository) Update(tx *sqlx.Tx, ctx context.Context, user modelentities.User) (rowsAffected int64, err error) {
 	result, err := tx.ExecContext(ctx, `UPDATE users SET email = ?, password = ? WHERE id = ?;`, user.Email, user.Password, user.Id)
 	if err != nil {
 		return
@@ -50,7 +50,7 @@ func (repository *MysqlRepositoryImplementation) Update(tx *sqlx.Tx, ctx context
 	return result.RowsAffected()
 }
 
-func (repository *MysqlRepositoryImplementation) Delete(tx *sqlx.Tx, ctx context.Context, id int) (rowsAffected int64, err error) {
+func (repository *mysqlRepository) Delete(tx *sqlx.Tx, ctx context.Context, id int) (rowsAffected int64, err error) {
 	result, err := tx.ExecContext(ctx, `DELETE FROM users WHERE id = ?;`, id)
 	if err != nil {
 		return
