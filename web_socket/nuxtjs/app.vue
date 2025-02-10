@@ -18,6 +18,7 @@
     }
 
     ws.value = new WebSocket(`ws://localhost:8080/ws?id=${clientId.value}`);
+    // ws.value = new WebSocket(`/ws?id=${clientId.value}`);
 
     ws.value.onopen = () => {
       console.log(`Terhubung sebagai ${clientId.value}`);
@@ -39,6 +40,7 @@
     }
 
     await fetch(`http://localhost:8080/send-message?clientIdSendTo=${clientIdSendTo.value}&msg=${message.value}`);
+    // await fetch(`/send-message?clientIdSendTo=${clientIdSendTo.value}&msg=${message.value}`);
     messages.value.push(`Anda: ${message.value}`);
   }
 

@@ -10,6 +10,9 @@ import (
 	"strconv"
 	"time"
 
+	"note-request-response-log-golang/helpers"
+	modelresponses "note-request-response-log-golang/models/responses"
+
 	"github.com/labstack/echo/v4"
 )
 
@@ -33,6 +36,7 @@ func PrintRequestResponseLog(next echo.HandlerFunc) echo.HandlerFunc {
 		datetimeNowRequest := time.Now()
 		requestMethod := c.Request().Method
 		var err error
+		var httpResponse modelresponses.HttpResponse
 
 		requestId := c.Request().Context().Value(RequestIdKey).(string)
 
@@ -40,16 +44,22 @@ func PrintRequestResponseLog(next echo.HandlerFunc) echo.HandlerFunc {
 		requestBody = `""`
 		body, errJsonRequestBody := io.ReadAll(c.Request().Body)
 		if errJsonRequestBody != nil {
+			helpers.PrintLogToTerminal(errJsonRequestBody, requestId)
+			httpResponse = modelresponses.SetInternalServerErrorHttpResponse()
 			err = errJsonRequestBody
 		}
 		if len(body) == 0 {
 			errLenBody := errors.New("json len body equal to 0")
+			helpers.PrintLogToTerminal(errLenBody, requestId)
 			err = errLenBody
+			httpResponse = modelresponses.SetInternalServerErrorHttpResponse()
 		}
 		jsonRequestBodyMap := make(map[string]interface{})
 		errJsonRequestBodyMap := json.Unmarshal(body, &jsonRequestBodyMap)
 		if errJsonRequestBodyMap != nil {
+			helpers.PrintLogToTerminal(errJsonRequestBodyMap, requestId)
 			err = errJsonRequestBodyMap
+			httpResponse = modelresponses.SetInternalServerErrorHttpResponse()
 		}
 		c.Request().Body = io.NopCloser(bytes.NewBuffer(body))
 
@@ -63,6 +73,8 @@ func PrintRequestResponseLog(next echo.HandlerFunc) echo.HandlerFunc {
 
 			jsonRequestBodyByte, errJsonRequestBodyByte := json.Marshal(jsonRequestBodyMap)
 			if errJsonRequestBodyByte != nil {
+				helpers.PrintLogToTerminal(errJsonRequestBodyByte, requestId)
+				httpResponse = modelresponses.SetInternalServerErrorHttpResponse()
 				err = errJsonRequestBodyByte
 			}
 			requestBody = string(jsonRequestBodyByte)
@@ -83,9 +95,7 @@ func PrintRequestResponseLog(next echo.HandlerFunc) echo.HandlerFunc {
 		requestLog := `{"requestTime": "` + datetimeNowRequest.String() + `", "app": "project-backend", "method": "` + requestMethod + `","requestId":"` + requestId + `","host": "` + host + `","urlPath":"` + urlPath + `","protocol":"` + protocol + `","body": ` + requestBody + `, "userAgent": "` + userAgent + `", "remoteAddr": "` + remoteAddr + `", "forwardedFor": "` + forwardedFor + `"}`
 		fmt.Println(requestLog)
 		if err != nil {
-			return c.JSON(http.StatusInternalServerError, map[string]interface{}{
-				"response": "internal server error",
-			})
+			return c.JSON(httpResponse.HttpStatusCode, httpResponse.Response)
 		}
 
 		// so i can catch the response body

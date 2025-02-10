@@ -27,10 +27,6 @@ var sseclients2 = make(map[string]echo.Context)
 
 func main() {
 	e := echo.New()
-	// e.Use(echomiddleware.CORSWithConfig(echomiddleware.CORSConfig{
-	// 	AllowOrigins: []string{"http://localhost:3000", "*"},
-	// 	AllowHeaders: []string{echo.HeaderOrigin, echo.HeaderContentType, echo.HeaderAccept},
-	// }))
 	e.Use(echomiddleware.Recover())
 	e.Use(middlewares.SetRequestId)
 	// server sent event is sensitive to middleware
@@ -82,8 +78,6 @@ func main() {
 		c.Response().Header().Set("Content-Type", "text/event-stream")
 		c.Response().Header().Set("Cache-Control", "no-cache")
 		c.Response().Header().Set("Connection", "keep-alive")
-		// c.Response().Header().Set("Access-Control-Allow-Origin", "*")
-		// c.Response().Flush()
 
 		sseClient := SSEClient{}
 		sseClient.Id = time.Now().UnixMilli()
@@ -100,9 +94,7 @@ func main() {
 				break sseClientsLoop
 			}
 		}
-		fmt.Println()
-		fmt.Println("sse disconected ==============================")
-		fmt.Println()
+
 		return nil
 	})
 
@@ -136,52 +128,12 @@ func main() {
 		c.Response().Header().Set("Content-Type", "text/event-stream")
 		c.Response().Header().Set("Cache-Control", "no-cache")
 		c.Response().Header().Set("Connection", "keep-alive")
-		// c.Response().Header().Set("Connection", "close")
-		// c.Response().Flush()
-		// c.Response().Header().Set("Access-Control-Allow-Origin", "*")
-		// c.Response().Flush()
-
-		// sseClient := SSEClient{}
-		// sseClient.Id = time.Now().UnixMilli()
-		// sseClient.Context = c
-		// SSEClients = append(SSEClients, sseClient)
-		// fmt.Println("SSEClients:", SSEClients)
 		id := c.QueryParam("id")
-		// w := c.Response()
-		// w.Header().Set("Content-Type", "text/event-stream")
-		// w.Header().Set("Cache-Control", "no-cache")
-		// w.Header().Set("Connection", "keep-alive")
-		// w.Header().Set("Connection", "close")
-		// w.Flush()
-
 		sseclients2[id] = c
-		fmt.Println("sseclients2:", sseclients2)
-		log.Println("mulai")
-
 		<-c.Request().Context().Done()
-
-		// log.Println("mulai")
-		// select {
-		// case <-c.Request().Context().Done(): // Ketika koneksi diputus
-		// 	fmt.Println("mantap")
-		// 	delete(sseclients2, id)
-		// 	fmt.Println("SSE client disconnected") // Logging disconnect
-		// 	log.Println("akhir")
-		// 	return nil
-		// }
 
 		delete(sseclients2, id)
 
-		// sseClientsLoop:
-		// for i := 0; i < len(SSEClients); i++ {
-		// 	if SSEClients[i].Id == sseClient.Id {
-		// 		SSEClients = append(SSEClients[:i], SSEClients[i+1:]...)
-		// 		break sseClientsLoop
-		// 	}
-		// }
-		fmt.Println()
-		fmt.Println("sse disconected 2 ==============================")
-		fmt.Println()
 		return nil
 	})
 
@@ -189,79 +141,16 @@ func main() {
 		id := c.QueryParam("id")
 		message := c.QueryParam("message")
 
-		// var messageEvent map[string]interface{}
-		// messageEvent = map[string]interface{}{
-		// 	"message": message,
-		// }
-		// jsonData, _ := json.Marshal(messageEvent)
-		// ctx := sseclients2[id]
-		// fmt.Fprintf(ctx.Response(), "data: %s\n\n", jsonData)
-		// // ctx.Response().Flush()
-		// ctx.Response().Flush()
-
-		ticker := time.NewTicker(1 * time.Minute)
-		defer ticker.Stop()
-		for {
-			select {
-			case <-c.Request().Context().Done():
-				fmt.Println("client disconnected")
-				return nil
-			case <-ticker.C:
-				fmt.Println("send message")
-				var messageEvent map[string]interface{}
-				messageEvent = map[string]interface{}{
-					"message": message + ":" + time.Now().String(),
-				}
-				jsonData, _ := json.Marshal(messageEvent)
-				ctx := sseclients2[id]
-				fmt.Fprintf(ctx.Response(), "data: %s\n\n", jsonData)
-				// ctx.Response().Flush()
-				ctx.Response().Flush()
-			}
+		var messageEvent map[string]interface{}
+		messageEvent = map[string]interface{}{
+			"message": message,
 		}
+		jsonData, _ := json.Marshal(messageEvent)
+		ctx := sseclients2[id]
+		fmt.Fprintf(ctx.Response(), "data: %s\n\n", jsonData)
+		ctx.Response().Flush()
 
-		// for i := 0; i < len(SSEClients); i++ {
-		// 	fmt.Println("send message to:", SSEClients[i], " dengan pesan:", message)
-		// 	ctx := SSEClients[i].Context
-
-		// 	headers := ctx.Response().Header()
-		// 	var output string
-		// 	for key, values := range headers {
-		// 		output += fmt.Sprintf("%s: %s\n", key, values)
-		// 	}
-		// 	fmt.Println("headers:", output)
-
-		// 	var messageEvent map[string]interface{}
-		// 	messageEvent = map[string]interface{}{
-		// 		"message": message,
-		// 	}
-		// 	jsonData, _ := json.Marshal(messageEvent)
-		// 	fmt.Fprintf(ctx.Response(), "data: %s\n\n", jsonData)
-		// 	ctx.Response().Flush()
-		// }
-
-		// ctx := sseclients2[id]
-		// ticker := time.NewTicker(1 * time.Second)
-		// defer ticker.Stop()
-		// for {
-		// 	select {
-		// 	case <-c.Request().Context().Done():
-		// 		log.Printf("SSE client disconnected, ip: %v", c.RealIP())
-		// 		return nil
-		// 	case <-ticker.C:
-		// 		fmt.Println("send message:", id+":"+message)
-		// 		// event := Event{
-		// 		// 	Data: []byte("time: " + time.Now().Format(time.RFC3339Nano)),
-		// 		// }
-		// 		// if err := event.MarshalTo(w); err != nil {
-		// 		// 	return err
-		// 		// }
-		// 		fmt.Fprintf(ctx.Response(), "%s\n\n", id+":"+message)
-		// 		ctx.Response().Flush()
-		// 	}
-		// }
-
-		// return nil
+		return nil
 	})
 
 	e.Logger.Fatal(e.Start(":8080"))

@@ -13,8 +13,6 @@ func CustomHTTPErrorHandler(err error, c echo.Context) {
 	fmt.Println("requestId:", requestId)
 	he, ok := err.(*echo.HTTPError)
 	if !ok {
-		// err = errors.New("cannot convert error to echo.HTTPError")
-		// httpResponse := modelresponses.SetInternalServerErrorHttpResponse()
 		c.JSON(http.StatusInternalServerError, map[string]interface{}{
 			"response": "cannot convert error to echo.HTTPError",
 		})
@@ -29,12 +27,6 @@ func CustomHTTPErrorHandler(err error, c echo.Context) {
 	} else {
 		message = "internal server error"
 	}
-	// errorMessages := helpers.ToErrorMessages(message)
-	// response := helpers.Response{
-	// 	Data:   nil,
-	// 	Errors: errorMessages,
-	// }
-	// httpResponse := modelresponses.SetHttpResponse(he.Code, nil, []modelresponses.Error{{Field: "message", Message: message}})
 	c.JSON(he.Code, map[string]interface{}{
 		"response": message,
 	})

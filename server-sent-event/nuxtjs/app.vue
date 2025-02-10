@@ -20,27 +20,15 @@
     })
 
     function close() {
-      console.log("mantap1")
-      eventSource.value.close();
-      eventSource.value = null;
-      // if (eventSource.value) {
-      //   console.log("mantap2")
-      //   eventSource.value.close()
-      //   eventSource.value = null
-      // }
-      // console.log("eventSource.value:", eventSource.value)
-      // if (eventSource.value) {
-      //   console.log("mantap2")
-      //   eventSource.value.close();
-      //   eventSource.value = null;
-      // }
+      if (eventSource.value) {
+        eventSource.value.close()
+        eventSource.value = null
+      }
     }
 </script>
 
 <template>
   <div>
     <button @click="close">close</button>
-    <!-- <NuxtRouteAnnouncer /> -->
-    <!-- <NuxtWelcome /> -->
   </div>
 </template>
