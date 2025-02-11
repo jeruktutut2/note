@@ -5,11 +5,18 @@ use tokio::signal;
 use axum::{routing::get, Router};
 use tokio::time::sleep;
 
+mod controllers;
+mod routes;
+mod middlewares;
+
 #[tokio::main]
 async fn main() {
     // println!("Hello, world!");
     let app = Router::new()
-        .route("/slow", get(|| sleep(Duration::from_secs(5))));
+    .route("/slow", get(|| sleep(Duration::from_secs(5))))
+    // .route("/root", get(root1))
+    .merge(routes::route::set_test_route());
+
     // Create a `TcpListener` using tokio.
     let listener = TcpListener::bind("0.0.0.0:8080").await.unwrap();
 
@@ -19,6 +26,10 @@ async fn main() {
         .await
         .unwrap();
 }
+
+// async fn root1() -> &'static str {
+//     "Hello, World!"
+// }
 
 async fn shutdown_signal() {
     // println!("1");
