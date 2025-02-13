@@ -1,25 +1,26 @@
-use std::time::Duration;
+use axum::{http::StatusCode, middleware, response::IntoResponse, routing::{get, post}, Json, Router};
+use serde_json::{json, Value};
+use tokio::{net::TcpListener, signal};
 
-use tokio::net::TcpListener;
-use tokio::signal;
-use axum::{routing::get, Router};
-use tokio::time::sleep;
-
-mod controllers;
-mod routes;
 mod middlewares;
 
 #[tokio::main]
 async fn main() {
     let app = Router::new()
-    .route("/slow", get(|| sleep(Duration::from_secs(5))))
-    .merge(routes::route::set_test_route());
-
+        .route("/", post(test))
+        .layer(middleware::from_fn(middlewares::request_response_log::set_request_response_log))
+        .layer(middleware::from_fn(middlewares::request_id_middleware::set_request_id));
     let listener = TcpListener::bind("0.0.0.0:8080").await.unwrap();
+
     axum::serve(listener, app)
         .with_graceful_shutdown(shutdown_signal())
         .await
         .unwrap();
+}
+
+async fn test() -> impl IntoResponse {
+    let body: Value = json!({"foo": "bar"});
+    (StatusCode::OK, Json(body))
 }
 
 async fn shutdown_signal() {

@@ -3,7 +3,7 @@ use std::sync::Arc;
 use axum::{extract::Request, middleware::Next, response::Response};
 use uuid::Uuid;
 
-use crate::middlewares::model_middleware;
+use super::model_middleware;
 
 pub async fn set_request_id(
     mut request: Request,
