@@ -2,14 +2,9 @@ package modelresponses
 
 import "net/http"
 
-type Error struct {
-	Field   string `json:"field"`
-	Message string `json:"message"`
-}
-
 type Response struct {
 	Data   interface{} `json:"data"`
-	Errors []Error     `json:"errors"`
+	Errors interface{} `json:"errors"`
 }
 
 type MessageResponse struct {
@@ -21,7 +16,7 @@ type HttpResponse struct {
 	Response       Response `json:"response"`
 }
 
-func SetHttpResponse(httpStatusCode int, data interface{}, errors []Error) HttpResponse {
+func SetHttpResponse(httpStatusCode int, data interface{}, errors interface{}) HttpResponse {
 	return HttpResponse{
 		HttpStatusCode: httpStatusCode,
 		Response: Response{
@@ -31,14 +26,48 @@ func SetHttpResponse(httpStatusCode int, data interface{}, errors []Error) HttpR
 	}
 }
 
-func SetMessageHttpResponse(message string) HttpResponse {
+func SetDataHttpResponse(httpStatusCode int, data interface{}) HttpResponse {
 	return HttpResponse{
-		HttpStatusCode: http.StatusOK,
+		HttpStatusCode: httpStatusCode,
+		Response: Response{
+			Data:   data,
+			Errors: nil,
+		},
+	}
+}
+
+func SetMessageHttpResponse(httpStatusCode int, message string) HttpResponse {
+	return HttpResponse{
+		HttpStatusCode: httpStatusCode,
 		Response: Response{
 			Data: MessageResponse{
 				Message: message,
 			},
-			Errors: []Error{},
+			Errors: nil,
+		},
+	}
+}
+
+func SetBadRequestHttpResponse(message string) HttpResponse {
+	return HttpResponse{
+		HttpStatusCode: http.StatusBadRequest,
+		Response: Response{
+			Data: nil,
+			Errors: MessageResponse{
+				Message: message,
+			},
+		},
+	}
+}
+
+func SetInternalServerErrorHttpResponse() HttpResponse {
+	return HttpResponse{
+		HttpStatusCode: http.StatusInternalServerError,
+		Response: Response{
+			Data: nil,
+			Errors: MessageResponse{
+				Message: "internal server error",
+			},
 		},
 	}
 }
