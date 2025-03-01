@@ -1,5 +1,3 @@
-use std::sync::Arc;
-
 use axum::{middleware, routing::get, Router};
 
 use crate::{controllers::request_id_controller, middlewares};

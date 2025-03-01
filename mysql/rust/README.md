@@ -29,3 +29,10 @@
         id INT AUTO_INCREMENT PRIMARY KEY,
         test VARCHAR(255) NOT NULL
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+## curl
+    curl http://localhost:8080/
+
+    curl -X POST "http://localhost:8080/" \
+     -H "Content-Type: application/json" \
+     -d '{"name": "name", "address": "address"}'

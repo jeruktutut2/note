@@ -54,7 +54,7 @@ func (service *mongodbService) InsertOne(ctx context.Context, createRequest mode
 		fmt.Println("error when inserting one:", err)
 		return modelresponses.SetInternalServerErrorResponse()
 	}
-	return modelresponses.SetHttpResponse(http.StatusCreated, user, []modelresponses.Error{})
+	return modelresponses.SetDataHttpResponse(http.StatusCreated, user)
 }
 
 func (service *mongodbService) InsertMany(ctx context.Context, createRequests []modelrequests.CreateRequest) (httpResponse modelresponses.HttpResponse) {
@@ -77,7 +77,7 @@ func (service *mongodbService) InsertMany(ctx context.Context, createRequests []
 		return modelresponses.SetInternalServerErrorResponse()
 	}
 
-	return modelresponses.SetHttpResponse(http.StatusCreated, users, []modelresponses.Error{})
+	return modelresponses.SetDataHttpResponse(http.StatusCreated, users)
 }
 
 func (service *mongodbService) FindOne(ctx context.Context, email string) (httpResponse modelresponses.HttpResponse) {
@@ -85,11 +85,11 @@ func (service *mongodbService) FindOne(ctx context.Context, email string) (httpR
 	if err != nil {
 		fmt.Println("error when finding one:", err)
 		if err == mongo.ErrNoDocuments || err == mongo.ErrNilDocument {
-			return modelresponses.SetBadRequestResponse("message", "cannot user find by email")
+			return modelresponses.SetBadRequestResponse("cannot user find by email")
 		}
 		return modelresponses.SetInternalServerErrorResponse()
 	}
-	return modelresponses.SetHttpResponse(http.StatusOK, user, []modelresponses.Error{})
+	return modelresponses.SetDataHttpResponse(http.StatusOK, user)
 }
 
 func (service *mongodbService) Find(ctx context.Context, email string) (httpResponse modelresponses.HttpResponse) {
@@ -99,9 +99,9 @@ func (service *mongodbService) Find(ctx context.Context, email string) (httpResp
 		return modelresponses.SetInternalServerErrorResponse()
 	} else if len(users) < 1 {
 		fmt.Println("users not found")
-		return modelresponses.SetNotFoundHttpResponse("message", "users not found")
+		return modelresponses.SetNotFoundHttpResponse("users not found")
 	}
-	return modelresponses.SetHttpResponse(http.StatusOK, users, []modelresponses.Error{})
+	return modelresponses.SetDataHttpResponse(http.StatusOK, users)
 }
 
 func (service *mongodbService) UpdateOne(ctx context.Context, updateRequest modelrequests.UpdateRequest) (httpResponse modelresponses.HttpResponse) {
@@ -117,7 +117,7 @@ func (service *mongodbService) UpdateOne(ctx context.Context, updateRequest mode
 		fmt.Println("rows affected not one")
 		return modelresponses.SetInternalServerErrorResponse()
 	}
-	return modelresponses.SetHttpResponse(http.StatusOK, user, []modelresponses.Error{})
+	return modelresponses.SetDataHttpResponse(http.StatusOK, user)
 }
 
 func (service *mongodbService) UpdateById(ctx context.Context, id string) (httpResponse modelresponses.HttpResponse) {

@@ -7,10 +7,12 @@ use tokio::{net::TcpListener, signal};
 mod utils;
 mod services;
 mod models;
+mod repositories;
+mod controllers;
+mod states;
 
 #[tokio::main]
 async fn main() {
-    // println!("Hello, world!");
 
     let mysql_util = Arc::new(utils::mysql_util::MysqlUtilImpl::new().await);
     println!("mysql_util: {:?}", mysql_util);

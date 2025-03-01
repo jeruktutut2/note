@@ -33,13 +33,13 @@ func NewPostgresService(postgresUtil utils.PostgresUtil, postgresRepository repo
 func (service *postgresService) Create(ctx context.Context, createRequest modelrequests.CreateRequest) (httpResponse modelresponses.HttpResponse) {
 	tx, err := service.PostgresUtil.BeginTxx(ctx, &sql.TxOptions{})
 	if err != nil {
-		return modelresponses.SetHttpResponse(http.StatusInternalServerError, nil, []modelresponses.Error{{Field: "message", Message: "internal server error"}})
+		return modelresponses.SetInternalServerErrorHttpResponse()
 	}
 
 	defer func() {
 		errCommitOrRollback := service.PostgresUtil.CommitOrRollback(tx, err)
 		if errCommitOrRollback != nil {
-			httpResponse = modelresponses.SetHttpResponse(http.StatusInternalServerError, nil, []modelresponses.Error{{Field: "message", Message: "internal server error"}})
+			httpResponse = modelresponses.SetInternalServerErrorHttpResponse()
 		}
 	}()
 
@@ -48,30 +48,30 @@ func (service *postgresService) Create(ctx context.Context, createRequest modelr
 	user.Password = createRequest.Password
 	id, err := service.PostgresRepository.Create(tx, ctx, user)
 	if err != nil {
-		return modelresponses.SetHttpResponse(http.StatusInternalServerError, nil, []modelresponses.Error{{Field: "message", Message: "internal server error"}})
+		return modelresponses.SetInternalServerErrorHttpResponse()
 	}
 	user.Id = id
-	return modelresponses.SetHttpResponse(http.StatusCreated, user, []modelresponses.Error{})
+	return modelresponses.SetDataHttpResponse(http.StatusCreated, user)
 }
 
 func (service *postgresService) Get(ctx context.Context, id int) (httpResponse modelresponses.HttpResponse) {
 	user, err := service.PostgresRepository.Get(service.PostgresUtil.GetDb(), ctx, id)
 	if err != nil {
-		return modelresponses.SetHttpResponse(http.StatusInternalServerError, nil, []modelresponses.Error{{Field: "message", Message: "internal server error"}})
+		return modelresponses.SetInternalServerErrorHttpResponse()
 	}
-	return modelresponses.SetHttpResponse(http.StatusCreated, user, []modelresponses.Error{})
+	return modelresponses.SetDataHttpResponse(http.StatusCreated, user)
 }
 
 func (service *postgresService) Update(ctx context.Context, updateRequest modelrequests.UpdateRequest) (httpResponse modelresponses.HttpResponse) {
 	tx, err := service.PostgresUtil.BeginTxx(ctx, &sql.TxOptions{})
 	if err != nil {
-		return modelresponses.SetHttpResponse(http.StatusInternalServerError, nil, []modelresponses.Error{{Field: "message", Message: "internal server error"}})
+		return modelresponses.SetInternalServerErrorHttpResponse()
 	}
 
 	defer func() {
 		errCommitOrRollback := service.PostgresUtil.CommitOrRollback(tx, err)
 		if errCommitOrRollback != nil {
-			httpResponse = modelresponses.SetHttpResponse(http.StatusInternalServerError, nil, []modelresponses.Error{{Field: "message", Message: "internal server error"}})
+			httpResponse = modelresponses.SetInternalServerErrorHttpResponse()
 		}
 	}()
 
@@ -81,31 +81,31 @@ func (service *postgresService) Update(ctx context.Context, updateRequest modelr
 	user.Password = updateRequest.Password
 	rowsAffected, err := service.PostgresRepository.Update(tx, ctx, user)
 	if err != nil {
-		return modelresponses.SetHttpResponse(http.StatusInternalServerError, nil, []modelresponses.Error{{Field: "message", Message: "internal server error"}})
+		return modelresponses.SetInternalServerErrorHttpResponse()
 	} else if rowsAffected != 1 {
-		return modelresponses.SetHttpResponse(http.StatusInternalServerError, nil, []modelresponses.Error{{Field: "message", Message: "rows affected create mysql is not 1"}})
+		return modelresponses.SetHttpResponse(http.StatusInternalServerError, nil, modelresponses.MessageResponse{Message: "rows affected not one"})
 	}
-	return modelresponses.SetHttpResponse(http.StatusCreated, user, []modelresponses.Error{})
+	return modelresponses.SetDataHttpResponse(http.StatusCreated, user)
 }
 
 func (service *postgresService) Delete(ctx context.Context, id int) (httpResponse modelresponses.HttpResponse) {
 	tx, err := service.PostgresUtil.BeginTxx(ctx, &sql.TxOptions{})
 	if err != nil {
-		return modelresponses.SetHttpResponse(http.StatusInternalServerError, nil, []modelresponses.Error{{Field: "message", Message: "internal server error"}})
+		return modelresponses.SetInternalServerErrorHttpResponse()
 	}
 
 	defer func() {
 		errCommitOrRollback := service.PostgresUtil.CommitOrRollback(tx, err)
 		if errCommitOrRollback != nil {
-			httpResponse = modelresponses.SetHttpResponse(http.StatusInternalServerError, nil, []modelresponses.Error{{Field: "message", Message: "internal server error"}})
+			httpResponse = modelresponses.SetInternalServerErrorHttpResponse()
 		}
 	}()
 
 	rowsAffected, err := service.PostgresRepository.Delete(tx, ctx, id)
 	if err != nil {
-		return modelresponses.SetHttpResponse(http.StatusInternalServerError, nil, []modelresponses.Error{{Field: "message", Message: "internal server error"}})
+		return modelresponses.SetInternalServerErrorHttpResponse()
 	} else if rowsAffected != 1 {
-		return modelresponses.SetHttpResponse(http.StatusInternalServerError, nil, []modelresponses.Error{{Field: "message", Message: "rows affected create mysql is not 1"}})
+		return modelresponses.SetHttpResponse(http.StatusInternalServerError, nil, modelresponses.MessageResponse{Message: "rows affected create mysql is not 1"})
 	}
-	return modelresponses.SetHttpResponse(http.StatusCreated, modelresponses.SetMessageHttpResponse("successfully delete user"), []modelresponses.Error{})
+	return modelresponses.SetDataHttpResponse(http.StatusCreated, modelresponses.SetMessageHttpResponse("successfully delete user"))
 }

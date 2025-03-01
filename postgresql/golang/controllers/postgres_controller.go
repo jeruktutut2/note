@@ -1,7 +1,6 @@
 package controllers
 
 import (
-	"net/http"
 	modelrequests "note-golang-postgresql/models/requests"
 	modelresponses "note-golang-postgresql/models/responses"
 	"note-golang-postgresql/services"
@@ -31,7 +30,7 @@ func (controller *postgresController) Create(c echo.Context) error {
 	var createRequest modelrequests.CreateRequest
 	err := c.Bind(&createRequest)
 	if err != nil {
-		httpResponse := modelresponses.SetHttpResponse(http.StatusBadRequest, nil, []modelresponses.Error{{Field: "message", Message: "bad request"}})
+		httpResponse := modelresponses.SetBadRequestHttpResponse("bad request")
 		return c.JSON(httpResponse.HttpStatusCode, httpResponse.Response)
 	}
 
@@ -44,7 +43,7 @@ func (controller *postgresController) Get(c echo.Context) error {
 	idParam := c.Param("id")
 	id, err := strconv.Atoi(idParam)
 	if err != nil {
-		httpResponse := modelresponses.SetHttpResponse(http.StatusInternalServerError, nil, []modelresponses.Error{{Field: "message", Message: "internal server error"}})
+		httpResponse := modelresponses.SetInternalServerErrorHttpResponse()
 		return c.JSON(httpResponse.HttpStatusCode, httpResponse.Response)
 	}
 	httpResponse := controller.PostgresService.Get(c.Request().Context(), id)
@@ -55,7 +54,7 @@ func (controller *postgresController) Update(c echo.Context) error {
 	var updateRequest modelrequests.UpdateRequest
 	err := c.Bind(&updateRequest)
 	if err != nil {
-		httpResponse := modelresponses.SetHttpResponse(http.StatusInternalServerError, nil, []modelresponses.Error{{Field: "message", Message: "internal server error"}})
+		httpResponse := modelresponses.SetInternalServerErrorHttpResponse()
 		return c.JSON(httpResponse.HttpStatusCode, httpResponse.Response)
 	}
 	httpResponse := controller.PostgresService.Update(c.Request().Context(), updateRequest)
@@ -66,7 +65,7 @@ func (controller *postgresController) Delete(c echo.Context) error {
 	idParam := c.Param("id")
 	id, err := strconv.Atoi(idParam)
 	if err != nil {
-		httpResponse := modelresponses.SetHttpResponse(http.StatusInternalServerError, nil, []modelresponses.Error{{Field: "message", Message: "internal server error"}})
+		httpResponse := modelresponses.SetInternalServerErrorHttpResponse()
 		return c.JSON(httpResponse.HttpStatusCode, httpResponse.Response)
 	}
 	httpResponse := controller.PostgresService.Delete(c.Request().Context(), id)

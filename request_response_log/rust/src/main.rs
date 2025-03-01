@@ -1,4 +1,4 @@
-use axum::{http::StatusCode, middleware, response::IntoResponse, routing::{get, post}, Json, Router};
+use axum::{http::StatusCode, middleware, response::IntoResponse, routing::post, Json, Router};
 use serde_json::{json, Value};
 use tokio::{net::TcpListener, signal};
 
