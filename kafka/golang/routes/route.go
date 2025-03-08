@@ -19,5 +19,5 @@ func SetKafkaRoute(e *echo.Echo) {
 	}
 	kafkaService := services.NewKafkaService(producer)
 	kafkaController := controllers.NewKafkaController(kafkaService)
-	e.GET("/send-message", kafkaController.SendMessage)
+	e.GET("/api/v1/message/send-message", kafkaController.SendMessage)
 }

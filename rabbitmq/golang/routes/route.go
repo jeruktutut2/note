@@ -11,5 +11,5 @@ import (
 func SetRabbitmqRoute(e *echo.Echo, channel *amqp091.Channel) {
 	rabbitmqService := services.NewRabbitmqService(channel)
 	rabbitmqController := controllers.NewRabbitmqController(rabbitmqService)
-	e.GET("/send-message", rabbitmqController.SendTextMessage)
+	e.GET("/api/v1/message/send-message", rabbitmqController.SendTextMessage)
 }

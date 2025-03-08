@@ -7,8 +7,8 @@ import (
 )
 
 func SetRoute(e *echo.Echo, controller controllers.PostgresController) {
-	e.POST("/create", controller.Create)
-	e.GET("/get", controller.Get)
-	e.PUT("/update", controller.Update)
-	e.DELETE("/delete", controller.Delete)
+	e.POST("/api/v1/test1", controller.Create)
+	e.GET("/api/v1/test1/:id", controller.Get)
+	e.PUT("/api/v1/test1", controller.Update)
+	e.DELETE("/api/v1/test1", controller.Delete)
 }

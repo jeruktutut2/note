@@ -12,10 +12,10 @@ import (
 )
 
 type MysqlService interface {
-	Create(ctx context.Context, createRequest modelrequests.CreateRequest) (httpResponse modelresponses.HttpResponse)
-	Get(ctx context.Context, id int) (httpResponse modelresponses.HttpResponse)
-	Update(ctx context.Context, updateRequest modelrequests.UpdateRequest) (httpResponse modelresponses.HttpResponse)
-	Delete(ctx context.Context, id int) (httpResponse modelresponses.HttpResponse)
+	Create(ctx context.Context, createRequest modelrequests.CreateRequest) (httpResponse modelresponses.Response)
+	Get(ctx context.Context, id int) (httpResponse modelresponses.Response)
+	Update(ctx context.Context, updateRequest modelrequests.UpdateRequest) (httpResponse modelresponses.Response)
+	Delete(ctx context.Context, id int) (httpResponse modelresponses.Response)
 }
 
 type mysqlService struct {
@@ -30,16 +30,16 @@ func NewMysqlService(mysqlUtil utils.MysqlUtil, mysqlRepository repositories.Mys
 	}
 }
 
-func (service *mysqlService) Create(ctx context.Context, createRequest modelrequests.CreateRequest) (httpResponse modelresponses.HttpResponse) {
+func (service *mysqlService) Create(ctx context.Context, createRequest modelrequests.CreateRequest) (httpResponse modelresponses.Response) {
 	tx, err := service.MysqlUtil.BeginTxx(ctx, &sql.TxOptions{})
 	if err != nil {
-		return modelresponses.SetInternalServerErrorHttpResponse()
+		return modelresponses.SetInternalServerErrorResponse()
 	}
 
 	defer func() {
 		errCommitOrRollback := service.MysqlUtil.CommitOrRollback(tx, err)
 		if errCommitOrRollback != nil {
-			httpResponse = modelresponses.SetInternalServerErrorHttpResponse()
+			httpResponse = modelresponses.SetInternalServerErrorResponse()
 		}
 	}()
 
@@ -48,32 +48,32 @@ func (service *mysqlService) Create(ctx context.Context, createRequest modelrequ
 	user.Password = createRequest.Password
 	rowsAffected, lastInsertedId, err := service.MysqlRepository.Create(tx, ctx, user)
 	if err != nil {
-		return modelresponses.SetInternalServerErrorHttpResponse()
+		return modelresponses.SetInternalServerErrorResponse()
 	} else if rowsAffected != 1 {
-		return modelresponses.SetInternalServerErrorHttpResponse()
+		return modelresponses.SetInternalServerErrorResponse()
 	}
 	user.Id = int(lastInsertedId)
-	return modelresponses.SetDataHttpResponse(http.StatusCreated, user)
+	return modelresponses.SetCreatedResponse(user)
 }
 
-func (service *mysqlService) Get(ctx context.Context, id int) (httpResponse modelresponses.HttpResponse) {
+func (service *mysqlService) Get(ctx context.Context, id int) (httpResponse modelresponses.Response) {
 	user, err := service.MysqlRepository.Get(service.MysqlUtil.GetDb(), ctx, id)
 	if err != nil {
-		return modelresponses.SetInternalServerErrorHttpResponse()
+		return modelresponses.SetInternalServerErrorResponse()
 	}
-	return modelresponses.SetDataHttpResponse(http.StatusOK, user)
+	return modelresponses.SetOkResponse(user)
 }
 
-func (service *mysqlService) Update(ctx context.Context, updateRequest modelrequests.UpdateRequest) (httpResponse modelresponses.HttpResponse) {
+func (service *mysqlService) Update(ctx context.Context, updateRequest modelrequests.UpdateRequest) (httpResponse modelresponses.Response) {
 	tx, err := service.MysqlUtil.BeginTxx(ctx, &sql.TxOptions{})
 	if err != nil {
-		return modelresponses.SetInternalServerErrorHttpResponse()
+		return modelresponses.SetInternalServerErrorResponse()
 	}
 
 	defer func() {
 		errCommitOrRollback := service.MysqlUtil.CommitOrRollback(tx, err)
 		if errCommitOrRollback != nil {
-			httpResponse = modelresponses.SetInternalServerErrorHttpResponse()
+			httpResponse = modelresponses.SetInternalServerErrorResponse()
 		}
 	}()
 
@@ -83,31 +83,32 @@ func (service *mysqlService) Update(ctx context.Context, updateRequest modelrequ
 	user.Password = updateRequest.Password
 	rowsAffected, err := service.MysqlRepository.Update(tx, ctx, user)
 	if err != nil {
-		return modelresponses.SetInternalServerErrorHttpResponse()
+		return modelresponses.SetInternalServerErrorResponse()
 	} else if rowsAffected != 1 {
-		return modelresponses.SetInternalServerErrorHttpResponse()
+		return modelresponses.SetInternalServerErrorResponse()
 	}
-	return modelresponses.SetDataHttpResponse(http.StatusOK, user)
+	return modelresponses.SetDataResponse(http.StatusOK, user)
 }
 
-func (service *mysqlService) Delete(ctx context.Context, id int) (httpResponse modelresponses.HttpResponse) {
+func (service *mysqlService) Delete(ctx context.Context, id int) (httpResponse modelresponses.Response) {
 	tx, err := service.MysqlUtil.BeginTxx(ctx, &sql.TxOptions{})
 	if err != nil {
-		return modelresponses.SetInternalServerErrorHttpResponse()
+		return modelresponses.SetInternalServerErrorResponse()
 	}
 
 	defer func() {
 		errCommitOrRollback := service.MysqlUtil.CommitOrRollback(tx, err)
 		if errCommitOrRollback != nil {
-			httpResponse = modelresponses.SetInternalServerErrorHttpResponse()
+			httpResponse = modelresponses.SetInternalServerErrorResponse()
 		}
 	}()
 
 	rowsAffected, err := service.MysqlRepository.Delete(tx, ctx, id)
 	if err != nil {
-		return modelresponses.SetInternalServerErrorHttpResponse()
+		return modelresponses.SetInternalServerErrorResponse()
 	} else if rowsAffected != 1 {
-		return modelresponses.SetInternalServerErrorHttpResponse()
+		return modelresponses.SetInternalServerErrorResponse()
 	}
-	return modelresponses.SetMessageHttpResponse(http.StatusNoContent, "successfully delete user")
+	// return modelresponses.SetMessageResponse(http.StatusNoContent, "successfully delete user")
+	return modelresponses.SetNoContentResponse("successfully delete user")
 }

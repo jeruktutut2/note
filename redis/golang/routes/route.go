@@ -7,7 +7,7 @@ import (
 )
 
 func SetRedisRoute(e *echo.Echo, controller controllers.RedisController) {
-	e.POST("/redis", controller.Set)
-	e.GET("/redis", controller.Get)
-	e.DELETE("/redis", controller.Del)
+	e.POST("/api/v1/redis", controller.Set)
+	e.GET("/api/v1/redis/:id", controller.Get)
+	e.DELETE("/api/v1/redis", controller.Del)
 }

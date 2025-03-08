@@ -30,44 +30,44 @@ func (controller *mysqlController) Create(c echo.Context) error {
 	var createRequest modelrequests.CreateRequest
 	err := c.Bind(&createRequest)
 	if err != nil {
-		httpResponse := modelresponses.SetBadRequestHttpResponse(err.Error())
-		return c.JSON(httpResponse.HttpStatusCode, httpResponse.Response)
+		httpResponse := modelresponses.SetBadRequestResponse(err.Error())
+		return c.JSON(httpResponse.HttpStatusCode, httpResponse.BodyResponse)
 	}
 
 	httpResponse := controller.MysqlService.Create(c.Request().Context(), createRequest)
 
-	return c.JSON(httpResponse.HttpStatusCode, httpResponse.Response)
+	return c.JSON(httpResponse.HttpStatusCode, httpResponse.BodyResponse)
 }
 
 func (controller *mysqlController) Get(c echo.Context) error {
 	idParam := c.Param("id")
 	id, err := strconv.Atoi(idParam)
 	if err != nil {
-		httpResponse := modelresponses.SetInternalServerErrorHttpResponse()
-		return c.JSON(httpResponse.HttpStatusCode, httpResponse.Response)
+		httpResponse := modelresponses.SetInternalServerErrorResponse()
+		return c.JSON(httpResponse.HttpStatusCode, httpResponse.BodyResponse)
 	}
 	httpResponse := controller.MysqlService.Get(c.Request().Context(), id)
-	return c.JSON(httpResponse.HttpStatusCode, httpResponse.Response)
+	return c.JSON(httpResponse.HttpStatusCode, httpResponse.BodyResponse)
 }
 
 func (controller *mysqlController) Update(c echo.Context) error {
 	var updateRequest modelrequests.UpdateRequest
 	err := c.Bind(&updateRequest)
 	if err != nil {
-		httpResponse := modelresponses.SetInternalServerErrorHttpResponse()
-		return c.JSON(httpResponse.HttpStatusCode, httpResponse.Response)
+		httpResponse := modelresponses.SetInternalServerErrorResponse()
+		return c.JSON(httpResponse.HttpStatusCode, httpResponse.BodyResponse)
 	}
 	httpResponse := controller.MysqlService.Update(c.Request().Context(), updateRequest)
-	return c.JSON(httpResponse.HttpStatusCode, httpResponse.Response)
+	return c.JSON(httpResponse.HttpStatusCode, httpResponse.BodyResponse)
 }
 
 func (controller *mysqlController) Delete(c echo.Context) error {
 	idParam := c.Param("id")
 	id, err := strconv.Atoi(idParam)
 	if err != nil {
-		httpResponse := modelresponses.SetInternalServerErrorHttpResponse()
-		return c.JSON(httpResponse.HttpStatusCode, httpResponse.Response)
+		httpResponse := modelresponses.SetInternalServerErrorResponse()
+		return c.JSON(httpResponse.HttpStatusCode, httpResponse.BodyResponse)
 	}
 	httpResponse := controller.MysqlService.Delete(c.Request().Context(), id)
-	return c.JSON(httpResponse.HttpStatusCode, httpResponse.Response)
+	return c.JSON(httpResponse.HttpStatusCode, httpResponse.BodyResponse)
 }
