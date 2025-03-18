@@ -13,7 +13,6 @@ public class Test1Service: ITest1Service
 
     public Test1Service(MongoDbContext mongoDbContext)
     {
-        // _test1 = mongoDbContext.GetCollection<Test1>("test1");
         _test1 = mongoDbContext.Test1;
     }
 
@@ -22,9 +21,7 @@ public class Test1Service: ITest1Service
         try
         {
             var test = new Test1 {Test = createRequest.Test};
-            // Console.WriteLine($"test: {test.Id}, {test.Test}");
             await _test1.InsertOneAsync(test);
-            // new CreateResponse{Id = test.Id, Test = test.Test};
             return ResponseHelper.SetCreatedResponse(new CreateResponse { Id = test.Id.ToString(), Test = test.Test });
         }
         catch(Exception e)

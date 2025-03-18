@@ -16,7 +16,5 @@ public class MongoDbContext
         Test1 = _database.GetCollection<Test1>("test1");
         Console.WriteLine("connected to mongodb");
     }
-
-    // public IMongoCollection<T> GetCollection<T>(string name) => _database.GetCollection<T>(name);
     public IMongoCollection<Test1> Test1 { get; }
 }

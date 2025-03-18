@@ -14,18 +14,14 @@ namespace net9.Controllers {
         }
 
         [HttpGet("{id}")]
-        // public async Task<IActionResult> GetTest1() {
         public async Task<IActionResult> GetById([FromRoute] string id) {
             var response = await _test1Service.GetById(id);
-            // return Ok();
             return StatusCode(response.HttpStatusCode, response.BodyResponse);
         }
 
         [HttpPost]
-        // public async Task<IActionResult> PostTest1() {
         public async Task<IActionResult> Create([FromBody] CreateRequest createRequest) {
             var response = await _test1Service.Create(createRequest);
-            // return Ok();
             return StatusCode(response.HttpStatusCode, response.BodyResponse);
         }
 
