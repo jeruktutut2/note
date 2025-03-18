@@ -10,9 +10,9 @@ pub fn set_route(collection: Arc<Collection<Test1>>) -> Router {
     let test1_service = Arc::new(Test1ServiceImpl::new(test1_repository.clone()));
     let state = Arc::new(AppState{test1_service: test1_service.clone()});
     Router::new()
-        .route("/", post(create))
-        .route("/{id}", get(get_by_id))
-        .route("/", put(update_by_id))
-        .route("/", delete(delete_by_id))
+        .route("/api/v1/test1", post(create))
+        .route("/api/v1/test1/{id}", get(get_by_id))
+        .route("/api/v1/test1", put(update_by_id))
+        .route("/api/v1/test1", delete(delete_by_id))
         .with_state(state)
 }
