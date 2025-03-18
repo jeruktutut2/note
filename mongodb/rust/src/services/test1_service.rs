@@ -17,7 +17,6 @@ pub struct Test1ServiceImpl {
 
 impl Test1ServiceImpl {
     pub fn new(test1_repository: Arc<Test1RepositoryImpl>) -> Test1ServiceImpl {
-        // test1_repository
         Test1ServiceImpl {
             test1_repository
         }
@@ -27,13 +26,6 @@ impl Test1ServiceImpl {
 impl Test1Service for Test1ServiceImpl {
     async fn create(&self, create_request: CreateRequest) -> Response<CreateResponse> {
         let test1 = Test1 {id: ObjectId::new(), test: create_request.test};
-        // match self.test1_repository.create(test1).await {
-        //     Ok(_) => _,
-        //     Err(err) => {
-        //         println!("error: {}", err)
-        //         return Response::set_internal_server_error_response()
-        //     }
-        // };
         if let Err(err) = self.test1_repository.create(&test1).await {
             println!("error: {}", err);
             return Response::set_internal_server_error_response()
@@ -42,11 +34,6 @@ impl Test1Service for Test1ServiceImpl {
     }
 
     async fn get_by_id(&self, id: String) -> Response<GetByIdResponse> {
-        // let objectId = ObjectId::parse_str(id);
-        // if let Err(err) = self.test1_repository.get_by_id(objectId).await {
-        //     println!("error: {}", err)
-        //     return Response::set_internal_server_error_response();
-        // }
         let object_id = match ObjectId::parse_str(&id) {
             Ok(object_id) => object_id,
             Err(err) => {

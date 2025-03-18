@@ -7,7 +7,6 @@ pub trait MongoUtil {
 
 #[derive(Debug)]
 pub struct MongoUtilImpl {
-    // client: Client
     database: Database
 }
 
@@ -19,7 +18,6 @@ impl MongoUtilImpl {
         let database = client.database("test1");
         println!("{} postgres: connected to localhost:27017", Local::now().format("%Y-%m-%d %H:%M:%S%.3f").to_string());
         MongoUtilImpl {
-            // client
             database
         }
     }

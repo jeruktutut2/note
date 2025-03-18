@@ -18,9 +18,7 @@ mod routes;
 
 #[tokio::main]
 async fn main() {
-    // println!("Hello, world!");
     let mongo_util = MongoUtilImpl::new().await;
-    // println!("{:?}", mongo_util);
     let test1_collection: Collection<Test1> = mongo_util.get_database().await.collection("test1");
     let collection = Arc::new(test1_collection);
 
