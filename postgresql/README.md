@@ -1,5 +1,34 @@
 # POSTGRESQL
 
+## install library
+to parse json
+    brew install jq
+to do benchmarking
+    brew install wrk
+    wrk --version
+
+## change file execute
+    chmod +x test.sh
+    ./test.sh
+
+## benchmark using wrk
+    wrk -t10 -c100 -d30s http://localhost:8080/test1/25
+    wrk -t5 -c10 -d60s http://localhost:8080/api/v1/test1/25
+    wrk -t10 -c10 -d60s http://localhost:8080/api/v1/test1/25
+    wrk -t1 -c1 -d60s http://localhost:8080/api/v1/test1/25
+
+## postgres process
+    check status DATABASE:
+
+    SELECT datname, usename, application_name, client_addr, state, count(*) as connections
+    FROM pg_stat_activity
+    GROUP BY datname, usename, application_name, client_addr, state
+    ORDER BY connections DESC;
+    
+    SELECT datname, usename, application_name, client_addr, state
+    FROM pg_stat_activity;
+
+
 ## postgresql
     psql -h localhost -d project_users -U postgres -W
     \list \l

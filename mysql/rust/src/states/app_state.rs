@@ -1,6 +1,6 @@
 use std::sync::Arc;
 
-use crate::{repositories::mysql_repository::MysqlRepositoryImpl, services::mysql_service::{MysqlService, MysqlServiceImpl}};
+use crate::services::mysql_service::MysqlServiceImpl;
 
 #[derive(Clone)]
 pub struct AppState {

@@ -9,9 +9,9 @@ import (
 )
 
 type PostgresRepository interface {
-	Create(tx *sqlx.Tx, ctx context.Context, user modelentities.User) (id int, err error)
-	Get(db *sqlx.DB, ctx context.Context, id int) (user modelentities.User, err error)
-	Update(tx *sqlx.Tx, ctx context.Context, user modelentities.User) (rowsAffected int64, err error)
+	Create(tx *sqlx.Tx, ctx context.Context, test1 modelentities.Test1) (id int, err error)
+	Get(db *sqlx.DB, ctx context.Context, id int) (test1 modelentities.Test1, err error)
+	Update(tx *sqlx.Tx, ctx context.Context, test1 modelentities.Test1) (rowsAffected int64, err error)
 	Delete(tx *sqlx.Tx, ctx context.Context, id int) (rowsAffected int64, err error)
 }
 
@@ -22,18 +22,18 @@ func NewPostgresRepository() PostgresRepository {
 	return &postgresRepository{}
 }
 
-func (repository *postgresRepository) Create(tx *sqlx.Tx, ctx context.Context, user modelentities.User) (id int, err error) {
-	err = tx.GetContext(ctx, &id, `INSERT INTO users (email, password) VALUES ($1, $2) RETURNING id;`, user.Email, user.Password)
+func (repository *postgresRepository) Create(tx *sqlx.Tx, ctx context.Context, test1 modelentities.Test1) (id int, err error) {
+	err = tx.GetContext(ctx, &id, `INSERT INTO test1 (test) VALUES ($1) RETURNING id;`, test1.Test)
 	return
 }
 
-func (repository *postgresRepository) Get(db *sqlx.DB, ctx context.Context, id int) (user modelentities.User, err error) {
-	err = db.GetContext(ctx, &user, `SELECT id, email, password FROM users WHERE id = $1;`, user.Id)
+func (repository *postgresRepository) Get(db *sqlx.DB, ctx context.Context, id int) (test1 modelentities.Test1, err error) {
+	err = db.GetContext(ctx, &test1, `SELECT id, test FROM test1 WHERE id = $1;`, id)
 	return
 }
 
-func (repository *postgresRepository) Update(tx *sqlx.Tx, ctx context.Context, user modelentities.User) (rowsAffected int64, err error) {
-	result, err := tx.ExecContext(ctx, `UPDATE users SET email = $1, password = $2 WHERE id = $3;`, user.Email, user.Password, user.Id)
+func (repository *postgresRepository) Update(tx *sqlx.Tx, ctx context.Context, test1 modelentities.Test1) (rowsAffected int64, err error) {
+	result, err := tx.ExecContext(ctx, `UPDATE test1 SET test = $1 WHERE id = $2;`, test1.Test, test1.Id)
 	if err != nil {
 		return
 	}
@@ -41,7 +41,7 @@ func (repository *postgresRepository) Update(tx *sqlx.Tx, ctx context.Context, u
 }
 
 func (repository *postgresRepository) Delete(tx *sqlx.Tx, ctx context.Context, id int) (rowsAffected int64, err error) {
-	result, err := tx.ExecContext(ctx, `DELETE FROM users WHERE id = $1;`, id)
+	result, err := tx.ExecContext(ctx, `DELETE FROM test1 WHERE id = $1;`, id)
 	if err != nil {
 		return
 	}

@@ -14,6 +14,9 @@
     docker exec -it project-redis bash
     redis-cli
     redis-cli -n 2 to change database
+    SELECT 0
+    SELECT 1
+    SELECT 2
     SET anotherkey "will expire in a minute" EX 60
     GET key
     FLUSHDB [ASYNC | SYNC]

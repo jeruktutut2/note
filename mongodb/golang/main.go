@@ -14,7 +14,7 @@ import (
 )
 
 func main() {
-	mongoUtil := utils.NewMongoDbConnection("localhost", "root", "12345", "users", "27017", 10, 3, 900)
+	mongoUtil := utils.NewMongoDbConnection("localhost", "root", "12345", "test1", "27017", 10, 3, 900)
 	defer mongoUtil.Close("localhost", "27127")
 	uuidHelper := helpers.NewUuidHelper()
 	e := echo.New()

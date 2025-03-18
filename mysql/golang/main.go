@@ -17,7 +17,7 @@ import (
 )
 
 func main() {
-	mysqlUtil := utils.NewMysqlUtil("localhost", "root", "12345", "users", "3309", 10, 10, 10, 10)
+	mysqlUtil := utils.NewMysqlUtil("localhost", "root", "12345", "test1", "3309", 10, 10, 10, 10)
 	defer mysqlUtil.Close("localhost", "3309")
 
 	e := echo.New()

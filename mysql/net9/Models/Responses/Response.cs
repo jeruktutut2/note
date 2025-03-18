@@ -51,6 +51,10 @@ namespace net9.Models.Responses {
             return new Response<T>(400, default , new Dictionary<string, string>{{"message", message}});
         }
 
+        public static Response<T> SetNotFoundResponse<T>(string message) {
+            return new Response<T>(404, default, new Dictionary<string, string>{{"message", message}});
+        }
+
         public static Response<T> SetInternalServerErrorResponse<T>()
         {
             return new Response<T>(500, default, new Dictionary<string, string>{{"message", "internal server error"}});

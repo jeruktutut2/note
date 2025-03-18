@@ -3,7 +3,6 @@ package services
 import (
 	"context"
 	"database/sql"
-	"net/http"
 	modelentities "note-golang-mysql/models/entities"
 	modelrequests "note-golang-mysql/models/requests"
 	modelresponses "note-golang-mysql/models/responses"
@@ -43,17 +42,19 @@ func (service *mysqlService) Create(ctx context.Context, createRequest modelrequ
 		}
 	}()
 
-	var user modelentities.User
-	user.Email = createRequest.Email
-	user.Password = createRequest.Password
-	rowsAffected, lastInsertedId, err := service.MysqlRepository.Create(tx, ctx, user)
+	// var user modelentities.User
+	// user.Email = createRequest.Email
+	// user.Password = createRequest.Password
+	var test1 modelentities.Test1
+	test1.Test = createRequest.Test
+	rowsAffected, lastInsertedId, err := service.MysqlRepository.Create(tx, ctx, test1)
 	if err != nil {
 		return modelresponses.SetInternalServerErrorResponse()
 	} else if rowsAffected != 1 {
 		return modelresponses.SetInternalServerErrorResponse()
 	}
-	user.Id = int(lastInsertedId)
-	return modelresponses.SetCreatedResponse(user)
+	test1.Id = int(lastInsertedId)
+	return modelresponses.SetCreatedResponse(test1)
 }
 
 func (service *mysqlService) Get(ctx context.Context, id int) (httpResponse modelresponses.Response) {
@@ -77,17 +78,21 @@ func (service *mysqlService) Update(ctx context.Context, updateRequest modelrequ
 		}
 	}()
 
-	var user modelentities.User
-	user.Id = updateRequest.Id
-	user.Email = updateRequest.Email
-	user.Password = updateRequest.Password
-	rowsAffected, err := service.MysqlRepository.Update(tx, ctx, user)
+	// var user modelentities.User
+	// user.Id = updateRequest.Id
+	// user.Email = updateRequest.Email
+	// user.Password = updateRequest.Password
+	var test1 modelentities.Test1
+	test1.Id = updateRequest.Id
+	test1.Test = updateRequest.Test
+	rowsAffected, err := service.MysqlRepository.Update(tx, ctx, test1)
 	if err != nil {
 		return modelresponses.SetInternalServerErrorResponse()
 	} else if rowsAffected != 1 {
 		return modelresponses.SetInternalServerErrorResponse()
 	}
-	return modelresponses.SetDataResponse(http.StatusOK, user)
+	// return modelresponses.SetDataResponse(http.StatusOK, test1)
+	return modelresponses.SetOkResponse(test1)
 }
 
 func (service *mysqlService) Delete(ctx context.Context, id int) (httpResponse modelresponses.Response) {

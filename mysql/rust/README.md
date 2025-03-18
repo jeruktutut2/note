@@ -3,6 +3,7 @@
 ## library
     cargo add axum
     cargo add tokio
+    cargo add serde --features=derive
     cargo add serde_json
     cargo add chrono
     cargo add sqlx

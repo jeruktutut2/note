@@ -30,44 +30,49 @@ func (controller *postgresController) Create(c echo.Context) error {
 	var createRequest modelrequests.CreateRequest
 	err := c.Bind(&createRequest)
 	if err != nil {
-		httpResponse := modelresponses.SetBadRequestHttpResponse("bad request")
-		return c.JSON(httpResponse.HttpStatusCode, httpResponse.Response)
+		response := modelresponses.SetBadRequestResponse("bad request")
+		return c.JSON(response.HttpStatusCode, response.BodyResponse)
 	}
 
-	httpResponse := controller.PostgresService.Create(c.Request().Context(), createRequest)
-
-	return c.JSON(httpResponse.HttpStatusCode, httpResponse.Response)
+	response := controller.PostgresService.Create(c.Request().Context(), createRequest)
+	return c.JSON(response.HttpStatusCode, response.BodyResponse)
 }
 
 func (controller *postgresController) Get(c echo.Context) error {
 	idParam := c.Param("id")
 	id, err := strconv.Atoi(idParam)
 	if err != nil {
-		httpResponse := modelresponses.SetInternalServerErrorHttpResponse()
-		return c.JSON(httpResponse.HttpStatusCode, httpResponse.Response)
+		response := modelresponses.SetInternalServerErrorResponse()
+		return c.JSON(response.HttpStatusCode, response.BodyResponse)
 	}
-	httpResponse := controller.PostgresService.Get(c.Request().Context(), id)
-	return c.JSON(httpResponse.HttpStatusCode, httpResponse.Response)
+	response := controller.PostgresService.Get(c.Request().Context(), id)
+	return c.JSON(response.HttpStatusCode, response.BodyResponse)
 }
 
 func (controller *postgresController) Update(c echo.Context) error {
 	var updateRequest modelrequests.UpdateRequest
 	err := c.Bind(&updateRequest)
 	if err != nil {
-		httpResponse := modelresponses.SetInternalServerErrorHttpResponse()
-		return c.JSON(httpResponse.HttpStatusCode, httpResponse.Response)
+		response := modelresponses.SetInternalServerErrorResponse()
+		return c.JSON(response.HttpStatusCode, response.BodyResponse)
 	}
-	httpResponse := controller.PostgresService.Update(c.Request().Context(), updateRequest)
-	return c.JSON(httpResponse.HttpStatusCode, httpResponse.Response)
+	response := controller.PostgresService.Update(c.Request().Context(), updateRequest)
+	return c.JSON(response.HttpStatusCode, response.BodyResponse)
 }
 
 func (controller *postgresController) Delete(c echo.Context) error {
-	idParam := c.Param("id")
-	id, err := strconv.Atoi(idParam)
+	// idParam := c.Param("id")
+	// id, err := strconv.Atoi(idParam)
+	// if err != nil {
+	// 	response := modelresponses.SetInternalServerErrorResponse()
+	// 	return c.JSON(response.HttpStatusCode, response.BodyResponse)
+	// }
+	var deleteRequest modelrequests.DeleteRequest
+	err := c.Bind(&deleteRequest)
 	if err != nil {
-		httpResponse := modelresponses.SetInternalServerErrorHttpResponse()
-		return c.JSON(httpResponse.HttpStatusCode, httpResponse.Response)
+		response := modelresponses.SetInternalServerErrorResponse()
+		return c.JSON(response.HttpStatusCode, response.BodyResponse)
 	}
-	httpResponse := controller.PostgresService.Delete(c.Request().Context(), id)
-	return c.JSON(httpResponse.HttpStatusCode, httpResponse.Response)
+	response := controller.PostgresService.Delete(c.Request().Context(), deleteRequest)
+	return c.JSON(response.HttpStatusCode, response.BodyResponse)
 }

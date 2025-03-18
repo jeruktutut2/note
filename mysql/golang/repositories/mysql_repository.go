@@ -8,9 +8,9 @@ import (
 )
 
 type MysqlRepository interface {
-	Create(tx *sqlx.Tx, ctx context.Context, user modelentities.User) (rowsAffected int64, lastInsertedId int64, err error)
-	Get(db *sqlx.DB, ctx context.Context, id int) (user modelentities.User, err error)
-	Update(tx *sqlx.Tx, ctx context.Context, user modelentities.User) (rowsAffected int64, err error)
+	Create(tx *sqlx.Tx, ctx context.Context, test1 modelentities.Test1) (rowsAffected int64, lastInsertedId int64, err error)
+	Get(db *sqlx.DB, ctx context.Context, id int) (test1 modelentities.Test1, err error)
+	Update(tx *sqlx.Tx, ctx context.Context, test1 modelentities.Test1) (rowsAffected int64, err error)
 	Delete(tx *sqlx.Tx, ctx context.Context, id int) (rowsAffected int64, err error)
 }
 
@@ -21,8 +21,8 @@ func NewMysqlRepository() MysqlRepository {
 	return &mysqlRepository{}
 }
 
-func (repository *mysqlRepository) Create(tx *sqlx.Tx, ctx context.Context, user modelentities.User) (rowsAffected int64, lastInsertedId int64, err error) {
-	result, err := tx.ExecContext(ctx, `INSERT INTO users (email, password) VALUES (?, ?);`, user.Email, user.Password)
+func (repository *mysqlRepository) Create(tx *sqlx.Tx, ctx context.Context, test1 modelentities.Test1) (rowsAffected int64, lastInsertedId int64, err error) {
+	result, err := tx.ExecContext(ctx, `INSERT INTO test1 (test) VALUES (?);`, test1.Test)
 	if err != nil {
 		return
 	}
@@ -37,13 +37,15 @@ func (repository *mysqlRepository) Create(tx *sqlx.Tx, ctx context.Context, user
 	return
 }
 
-func (repository *mysqlRepository) Get(db *sqlx.DB, ctx context.Context, id int) (user modelentities.User, err error) {
-	err = db.GetContext(ctx, &user, `SELECT id, email, password FROM users WHERE id = ?;`, user.Id)
+func (repository *mysqlRepository) Get(db *sqlx.DB, ctx context.Context, id int) (test1 modelentities.Test1, err error) {
+	// err = db.GetContext(ctx, &user, `SELECT id, email, password FROM users WHERE id = ?;`, user.Id)
+	// fmt.Println("test1.Id:", test1.Id)
+	err = db.GetContext(ctx, &test1, `SELECT id, test FROM test1 WHERE id = ?;`, id)
 	return
 }
 
-func (repository *mysqlRepository) Update(tx *sqlx.Tx, ctx context.Context, user modelentities.User) (rowsAffected int64, err error) {
-	result, err := tx.ExecContext(ctx, `UPDATE users SET email = ?, password = ? WHERE id = ?;`, user.Email, user.Password, user.Id)
+func (repository *mysqlRepository) Update(tx *sqlx.Tx, ctx context.Context, test1 modelentities.Test1) (rowsAffected int64, err error) {
+	result, err := tx.ExecContext(ctx, `UPDATE test1 SET test = ? WHERE id = ?;`, test1.Test, test1.Id)
 	if err != nil {
 		return
 	}
@@ -51,7 +53,7 @@ func (repository *mysqlRepository) Update(tx *sqlx.Tx, ctx context.Context, user
 }
 
 func (repository *mysqlRepository) Delete(tx *sqlx.Tx, ctx context.Context, id int) (rowsAffected int64, err error) {
-	result, err := tx.ExecContext(ctx, `DELETE FROM users WHERE id = ?;`, id)
+	result, err := tx.ExecContext(ctx, `DELETE FROM test1 WHERE id = ?;`, id)
 	if err != nil {
 		return
 	}

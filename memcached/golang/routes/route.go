@@ -11,7 +11,7 @@ import (
 func SetMemcachedRoute(e *echo.Echo, memcachedUtil utils.MemcachedUtil) {
 	memcachedService := services.NewMemcachedService(memcachedUtil)
 	memcachedController := controllers.NewMemcachedController(memcachedService)
-	e.POST("/set", memcachedController.Set)
-	e.GET("/get", memcachedController.Get)
-	e.DELETE("/delete", memcachedController.Delete)
+	e.POST("/api/v1/memcached", memcachedController.Set)
+	e.GET("/api/v1/memcached/:id", memcachedController.Get)
+	e.DELETE("/api/v1/memcached", memcachedController.Delete)
 }

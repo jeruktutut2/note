@@ -1,6 +1,7 @@
 docker run --name project-mongo -e MONGO_INITDB_ROOT_USERNAME=root -e MONGO_INITDB_ROOT_PASSWORD=12345 -p 27017:27017 -d mongo:latest
 docker exec -it project-mongo bash
 mongo -u root -p 12345 --authenticationDatabase admin
+mongosh -u root -p 12345 --authenticationDatabase admin
 show dbs
 use callCenter
 db

@@ -1,10 +1,25 @@
+using Microsoft.EntityFrameworkCore;
+using net9.Context;
+using net9.Services;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
+builder.Services.AddDbContext<PostgresContext>(optionsBuilder =>
+{
+    optionsBuilder.UseNpgsql(builder.Configuration["PostgresConnectionString"]);
+}, ServiceLifetime.Singleton);
+builder.Services.AddScoped<ITest1Service, Test1Service>();
+builder.Services.AddControllers();
 
 var app = builder.Build();
+using (var scope = app.Services.CreateScope())
+{
+    var postgresContext = scope.ServiceProvider.GetRequiredService<PostgresContext>();
+    postgresContext.Database.EnsureCreated();
+}
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -33,6 +48,8 @@ app.MapGet("/weatherforecast", () =>
 })
 .WithName("GetWeatherForecast");
 
+app.UseRouting();
+app.MapControllers();
 app.Run();
 
 record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)

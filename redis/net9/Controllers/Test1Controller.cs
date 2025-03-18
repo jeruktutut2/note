@@ -13,12 +13,12 @@ namespace net9.Controllers {
 
         [HttpGet("{id}")]
         public async Task<IActionResult> GetTest1() {
-
+            return Ok();
         }
 
         [HttpPost]
         public async Task<IActionResult> PostTest1() {
-
+            return Ok();
         }
     }
 }

@@ -6,40 +6,40 @@ type MessageResponse struct {
 	Message string `json:"message"`
 }
 
-type Response struct {
+type BodyResponse struct {
 	Data   interface{} `json:"data"`
 	Errors interface{} `json:"errors"`
 }
 
-type HttpResponse struct {
+type Response struct {
 	HttpStatusCode int
-	Response       Response
+	BodyResponse   BodyResponse
 }
 
-func SetHttpResponse(httpStatusCode int, data interface{}, errors interface{}) HttpResponse {
-	return HttpResponse{
+func SetResponse(httpStatusCode int, data interface{}, errors interface{}) Response {
+	return Response{
 		HttpStatusCode: httpStatusCode,
-		Response: Response{
+		BodyResponse: BodyResponse{
 			Data:   data,
 			Errors: errors,
 		},
 	}
 }
 
-func SetDataHttpResponse(httpStatusCode int, data interface{}) HttpResponse {
-	return HttpResponse{
+func SetDataResponse(httpStatusCode int, data interface{}) Response {
+	return Response{
 		HttpStatusCode: httpStatusCode,
-		Response: Response{
+		BodyResponse: BodyResponse{
 			Data:   data,
 			Errors: nil,
 		},
 	}
 }
 
-func SetMessageHttpResponse(httpStatusCode int, message string) HttpResponse {
-	return HttpResponse{
+func SetMessageResponse(httpStatusCode int, message string) Response {
+	return Response{
 		HttpStatusCode: httpStatusCode,
-		Response: Response{
+		BodyResponse: BodyResponse{
 			Data: MessageResponse{
 				Message: message,
 			},
@@ -48,10 +48,40 @@ func SetMessageHttpResponse(httpStatusCode int, message string) HttpResponse {
 	}
 }
 
-func SetBadRequestResponse(message string) HttpResponse {
-	return HttpResponse{
+func SetOkResponse(data interface{}) Response {
+	return Response{
+		HttpStatusCode: http.StatusOK,
+		BodyResponse: BodyResponse{
+			Data:   data,
+			Errors: nil,
+		},
+	}
+}
+
+func SetCreatedResponse(data interface{}) Response {
+	return Response{
+		HttpStatusCode: http.StatusCreated,
+		BodyResponse: BodyResponse{
+			Data:   data,
+			Errors: nil,
+		},
+	}
+}
+
+func SetNoContentResponse() Response {
+	return Response{
+		HttpStatusCode: http.StatusNoContent,
+		BodyResponse: BodyResponse{
+			Data:   nil,
+			Errors: nil,
+		},
+	}
+}
+
+func SetBadRequestResponse(message string) Response {
+	return Response{
 		HttpStatusCode: http.StatusBadRequest,
-		Response: Response{
+		BodyResponse: BodyResponse{
 			Data: nil,
 			Errors: MessageResponse{
 				Message: message,
@@ -60,10 +90,10 @@ func SetBadRequestResponse(message string) HttpResponse {
 	}
 }
 
-func SetNotFoundHttpResponse(message string) HttpResponse {
-	return HttpResponse{
+func SetNotFoundResponse(message string) Response {
+	return Response{
 		HttpStatusCode: http.StatusNotFound,
-		Response: Response{
+		BodyResponse: BodyResponse{
 			Data: nil,
 			Errors: MessageResponse{
 				Message: message,
@@ -72,10 +102,10 @@ func SetNotFoundHttpResponse(message string) HttpResponse {
 	}
 }
 
-func SetUnauthorizedHttpResponse(message string) HttpResponse {
-	return HttpResponse{
+func SetUnauthorizedResponse(message string) Response {
+	return Response{
 		HttpStatusCode: http.StatusUnauthorized,
-		Response: Response{
+		BodyResponse: BodyResponse{
 			Data: nil,
 			Errors: MessageResponse{
 				Message: message,
@@ -84,10 +114,10 @@ func SetUnauthorizedHttpResponse(message string) HttpResponse {
 	}
 }
 
-func SetUserCloseHttpConnectionErrorResponse() HttpResponse {
-	return HttpResponse{
+func SetUserCloseHttpConnectionErrorResponse() Response {
+	return Response{
 		HttpStatusCode: 499,
-		Response: Response{
+		BodyResponse: BodyResponse{
 			Data: nil,
 			Errors: MessageResponse{
 				Message: "user close http connection or cancel http connection",
@@ -96,10 +126,10 @@ func SetUserCloseHttpConnectionErrorResponse() HttpResponse {
 	}
 }
 
-func SetTimeoutErrorResponse() HttpResponse {
-	return HttpResponse{
+func SetTimeoutErrorResponse() Response {
+	return Response{
 		HttpStatusCode: http.StatusRequestTimeout,
-		Response: Response{
+		BodyResponse: BodyResponse{
 			Data: nil,
 			Errors: MessageResponse{
 				Message: "request timeout",
@@ -108,10 +138,10 @@ func SetTimeoutErrorResponse() HttpResponse {
 	}
 }
 
-func SetRefreshTokenExpiredHttpResponse() HttpResponse {
-	return HttpResponse{
+func SetRefreshTokenExpiredResponse() Response {
+	return Response{
 		HttpStatusCode: 498,
-		Response: Response{
+		BodyResponse: BodyResponse{
 			Data: nil,
 			Errors: MessageResponse{
 				Message: "refresh token has expired",
@@ -120,10 +150,10 @@ func SetRefreshTokenExpiredHttpResponse() HttpResponse {
 	}
 }
 
-func SetInternalServerErrorResponse() HttpResponse {
-	return HttpResponse{
+func SetInternalServerErrorResponse() Response {
+	return Response{
 		HttpStatusCode: http.StatusInternalServerError,
-		Response: Response{
+		BodyResponse: BodyResponse{
 			Data: nil,
 			Errors: MessageResponse{
 				Message: "internal server error",

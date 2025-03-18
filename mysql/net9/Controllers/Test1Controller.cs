@@ -31,6 +31,7 @@ namespace net9.Controllers {
             return StatusCode(response.HttpStatuscode, response.BodyResponse);
         }
 
+        [HttpDelete]
         public async Task<IActionResult> DeleteTest1([FromBody] Test1DeleteRequest test1DeleteRequest)
         {
             var response = await _test1Service.Delete(test1DeleteRequest);

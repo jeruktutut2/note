@@ -13,12 +13,15 @@ to do benchmarking
 
 ## benchmark using wrk
     wrk -t10 -c100 -d30s http://localhost:8080/test1/25
+    wrk -t5 -c10 -d60s http://localhost:8080/api/v1/test1/25
+    wrk -t10 -c10 -d60s http://localhost:8080/api/v1/test1/25
+    wrk -t1 -c1 -d60s http://localhost:8080/api/v1/test1/25
 
 ## check mysql process
     SHOW PROCESSLIST;
 
 ## curl test
-    curl -i -X GET -H "Content-Type: application/json" http://localhost:8080/api/v1/test1/1
+    curl -i -X GET -H "Content-Type: application/json" http://localhost:8080/api/v1/test1/25
     curl -i -X POST \
         -H "Content-Type: application/json" \
         -d '{"test": "test post"}' \

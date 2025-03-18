@@ -12,10 +12,10 @@ import (
 )
 
 type PostgresService interface {
-	Create(ctx context.Context, createRequest modelrequests.CreateRequest) (httpResponse modelresponses.HttpResponse)
-	Get(ctx context.Context, id int) (httpResponse modelresponses.HttpResponse)
-	Update(ctx context.Context, updateRequest modelrequests.UpdateRequest) (httpResponse modelresponses.HttpResponse)
-	Delete(ctx context.Context, id int) (httpResponse modelresponses.HttpResponse)
+	Create(ctx context.Context, createRequest modelrequests.CreateRequest) (response modelresponses.Response)
+	Get(ctx context.Context, id int) (response modelresponses.Response)
+	Update(ctx context.Context, updateRequest modelrequests.UpdateRequest) (response modelresponses.Response)
+	Delete(ctx context.Context, deleteRequest modelrequests.DeleteRequest) (response modelresponses.Response)
 }
 
 type postgresService struct {
@@ -30,82 +30,92 @@ func NewPostgresService(postgresUtil utils.PostgresUtil, postgresRepository repo
 	}
 }
 
-func (service *postgresService) Create(ctx context.Context, createRequest modelrequests.CreateRequest) (httpResponse modelresponses.HttpResponse) {
+func (service *postgresService) Create(ctx context.Context, createRequest modelrequests.CreateRequest) (response modelresponses.Response) {
 	tx, err := service.PostgresUtil.BeginTxx(ctx, &sql.TxOptions{})
 	if err != nil {
-		return modelresponses.SetInternalServerErrorHttpResponse()
+		return modelresponses.SetInternalServerErrorResponse()
 	}
 
 	defer func() {
 		errCommitOrRollback := service.PostgresUtil.CommitOrRollback(tx, err)
 		if errCommitOrRollback != nil {
-			httpResponse = modelresponses.SetInternalServerErrorHttpResponse()
+			response = modelresponses.SetInternalServerErrorResponse()
 		}
 	}()
 
-	var user modelentities.User
-	user.Email = createRequest.Email
-	user.Password = createRequest.Password
-	id, err := service.PostgresRepository.Create(tx, ctx, user)
+	// var user modelentities.User
+	// user.Email = createRequest.Email
+	// user.Password = createRequest.Password
+	var test1 modelentities.Test1
+	test1.Test = createRequest.Test
+	id, err := service.PostgresRepository.Create(tx, ctx, test1)
 	if err != nil {
-		return modelresponses.SetInternalServerErrorHttpResponse()
+		return modelresponses.SetInternalServerErrorResponse()
 	}
-	user.Id = id
-	return modelresponses.SetDataHttpResponse(http.StatusCreated, user)
+	// user.Id = id
+	test1.Id = id
+	// modelresponses.SetDataHttpResponse(http.StatusCreated, test1)
+	return modelresponses.SetCreateResponse(test1)
 }
 
-func (service *postgresService) Get(ctx context.Context, id int) (httpResponse modelresponses.HttpResponse) {
-	user, err := service.PostgresRepository.Get(service.PostgresUtil.GetDb(), ctx, id)
+func (service *postgresService) Get(ctx context.Context, id int) (response modelresponses.Response) {
+	test1, err := service.PostgresRepository.Get(service.PostgresUtil.GetDb(), ctx, id)
 	if err != nil {
-		return modelresponses.SetInternalServerErrorHttpResponse()
+		return modelresponses.SetInternalServerErrorResponse()
 	}
-	return modelresponses.SetDataHttpResponse(http.StatusCreated, user)
+	// modelresponses.SetDataHttpResponse(http.StatusCreated, user)
+	return modelresponses.SetOkResponse(test1)
 }
 
-func (service *postgresService) Update(ctx context.Context, updateRequest modelrequests.UpdateRequest) (httpResponse modelresponses.HttpResponse) {
+func (service *postgresService) Update(ctx context.Context, updateRequest modelrequests.UpdateRequest) (response modelresponses.Response) {
 	tx, err := service.PostgresUtil.BeginTxx(ctx, &sql.TxOptions{})
 	if err != nil {
-		return modelresponses.SetInternalServerErrorHttpResponse()
+		return modelresponses.SetInternalServerErrorResponse()
 	}
 
 	defer func() {
 		errCommitOrRollback := service.PostgresUtil.CommitOrRollback(tx, err)
 		if errCommitOrRollback != nil {
-			httpResponse = modelresponses.SetInternalServerErrorHttpResponse()
+			response = modelresponses.SetInternalServerErrorResponse()
 		}
 	}()
 
-	var user modelentities.User
-	user.Id = updateRequest.Id
-	user.Email = updateRequest.Email
-	user.Password = updateRequest.Password
-	rowsAffected, err := service.PostgresRepository.Update(tx, ctx, user)
+	// var user modelentities.User
+	// user.Id = updateRequest.Id
+	// user.Email = updateRequest.Email
+	// user.Password = updateRequest.Password
+	var test1 modelentities.Test1
+	test1.Id = updateRequest.Id
+	test1.Test = updateRequest.Test
+	rowsAffected, err := service.PostgresRepository.Update(tx, ctx, test1)
 	if err != nil {
-		return modelresponses.SetInternalServerErrorHttpResponse()
+		return modelresponses.SetInternalServerErrorResponse()
 	} else if rowsAffected != 1 {
-		return modelresponses.SetHttpResponse(http.StatusInternalServerError, nil, modelresponses.MessageResponse{Message: "rows affected not one"})
+		return modelresponses.SetResponse(http.StatusInternalServerError, nil, modelresponses.MessageResponse{Message: "rows affected not one"})
 	}
-	return modelresponses.SetDataHttpResponse(http.StatusCreated, user)
+	// modelresponses.SetDataHttpResponse(http.StatusCreated, user)
+	return modelresponses.SetOkResponse(test1)
 }
 
-func (service *postgresService) Delete(ctx context.Context, id int) (httpResponse modelresponses.HttpResponse) {
+func (service *postgresService) Delete(ctx context.Context, deleteRequst modelrequests.DeleteRequest) (response modelresponses.Response) {
 	tx, err := service.PostgresUtil.BeginTxx(ctx, &sql.TxOptions{})
 	if err != nil {
-		return modelresponses.SetInternalServerErrorHttpResponse()
+		return modelresponses.SetInternalServerErrorResponse()
 	}
 
 	defer func() {
 		errCommitOrRollback := service.PostgresUtil.CommitOrRollback(tx, err)
 		if errCommitOrRollback != nil {
-			httpResponse = modelresponses.SetInternalServerErrorHttpResponse()
+			response = modelresponses.SetInternalServerErrorResponse()
 		}
 	}()
 
-	rowsAffected, err := service.PostgresRepository.Delete(tx, ctx, id)
+	rowsAffected, err := service.PostgresRepository.Delete(tx, ctx, deleteRequst.Id)
 	if err != nil {
-		return modelresponses.SetInternalServerErrorHttpResponse()
+		return modelresponses.SetInternalServerErrorResponse()
 	} else if rowsAffected != 1 {
-		return modelresponses.SetHttpResponse(http.StatusInternalServerError, nil, modelresponses.MessageResponse{Message: "rows affected create mysql is not 1"})
+		return modelresponses.SetResponse(http.StatusInternalServerError, nil, modelresponses.MessageResponse{Message: "rows affected create mysql is not 1"})
 	}
-	return modelresponses.SetDataHttpResponse(http.StatusCreated, modelresponses.SetMessageHttpResponse("successfully delete user"))
+	// modelresponses.SetDataHttpResponse(http.StatusCreated, modelresponses.SetMessageHttpResponse("successfully delete user"))
+	return modelresponses.SetNoContentResponse()
 }

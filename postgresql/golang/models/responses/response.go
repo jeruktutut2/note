@@ -2,7 +2,7 @@ package modelresponses
 
 import "net/http"
 
-type Response struct {
+type BodyResponse struct {
 	Data   interface{} `json:"data"`
 	Errors interface{} `json:"errors"`
 }
@@ -11,35 +11,35 @@ type MessageResponse struct {
 	Message string `json:"message"`
 }
 
-type HttpResponse struct {
-	HttpStatusCode int      `json:"httpStatusCode"`
-	Response       Response `json:"response"`
+type Response struct {
+	HttpStatusCode int          `json:"httpStatusCode"`
+	BodyResponse   BodyResponse `json:"response"`
 }
 
-func SetHttpResponse(httpStatusCode int, data interface{}, errors interface{}) HttpResponse {
-	return HttpResponse{
+func SetResponse(httpStatusCode int, data interface{}, errors interface{}) Response {
+	return Response{
 		HttpStatusCode: httpStatusCode,
-		Response: Response{
+		BodyResponse: BodyResponse{
 			Data:   data,
 			Errors: errors,
 		},
 	}
 }
 
-func SetDataHttpResponse(httpStatusCode int, data interface{}) HttpResponse {
-	return HttpResponse{
+func SetDataResponse(httpStatusCode int, data interface{}) Response {
+	return Response{
 		HttpStatusCode: httpStatusCode,
-		Response: Response{
+		BodyResponse: BodyResponse{
 			Data:   data,
 			Errors: nil,
 		},
 	}
 }
 
-func SetMessageHttpResponse(message string) HttpResponse {
-	return HttpResponse{
+func SetMessageResponse(message string) Response {
+	return Response{
 		HttpStatusCode: http.StatusOK,
-		Response: Response{
+		BodyResponse: BodyResponse{
 			Data: MessageResponse{
 				Message: message,
 			},
@@ -48,10 +48,40 @@ func SetMessageHttpResponse(message string) HttpResponse {
 	}
 }
 
-func SetBadRequestHttpResponse(message string) HttpResponse {
-	return HttpResponse{
+func SetOkResponse(data interface{}) Response {
+	return Response{
+		HttpStatusCode: http.StatusOK,
+		BodyResponse: BodyResponse{
+			Data:   data,
+			Errors: nil,
+		},
+	}
+}
+
+func SetCreateResponse(data interface{}) Response {
+	return Response{
+		HttpStatusCode: http.StatusOK,
+		BodyResponse: BodyResponse{
+			Data:   data,
+			Errors: nil,
+		},
+	}
+}
+
+func SetNoContentResponse() Response {
+	return Response{
+		HttpStatusCode: http.StatusNoContent,
+		BodyResponse: BodyResponse{
+			Data:   nil,
+			Errors: nil,
+		},
+	}
+}
+
+func SetBadRequestResponse(message string) Response {
+	return Response{
 		HttpStatusCode: http.StatusBadRequest,
-		Response: Response{
+		BodyResponse: BodyResponse{
 			Data: nil,
 			Errors: MessageResponse{
 				Message: message,
@@ -60,10 +90,10 @@ func SetBadRequestHttpResponse(message string) HttpResponse {
 	}
 }
 
-func SetInternalServerErrorHttpResponse() HttpResponse {
-	return HttpResponse{
+func SetInternalServerErrorResponse() Response {
+	return Response{
 		HttpStatusCode: http.StatusInternalServerError,
-		Response: Response{
+		BodyResponse: BodyResponse{
 			Data: nil,
 			Errors: MessageResponse{
 				Message: "internal server error",

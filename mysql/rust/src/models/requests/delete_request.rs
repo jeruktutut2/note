@@ -3,6 +3,6 @@ use sqlx::FromRow;
 
 #[derive(FromRow, Debug, Default, Serialize, Deserialize)]
 pub struct DeleteRequest {
-    #[serde(rename = "test")]
+    #[serde(rename = "id")]
     pub id: i32
 }

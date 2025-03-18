@@ -10,5 +10,5 @@ export default defineEventHandler(async (event) => {
     }
     const httpResponse = await Test1Service.getById(id)
     setResponseStatus(event, httpResponse.httpStatusCode)
-    return httpResponse
+    return httpResponse.response
 })

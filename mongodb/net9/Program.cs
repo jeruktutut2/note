@@ -1,8 +1,14 @@
+using net9.Context;
+using net9.Services;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
+builder.Services.AddSingleton<MongoDbContext>();
+builder.Services.AddSingleton<ITest1Service, Test1Service>();
+builder.Services.AddControllers();
 
 var app = builder.Build();
 
@@ -33,6 +39,8 @@ app.MapGet("/weatherforecast", () =>
 })
 .WithName("GetWeatherForecast");
 
+app.UseRouting();
+app.MapControllers();
 app.Run();
 
 record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)

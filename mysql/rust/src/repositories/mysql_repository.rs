@@ -1,6 +1,6 @@
-use sqlx::{mysql::MySqlQueryResult, MySql, Transaction};
+use sqlx::{MySql, Transaction};
 
-use crate::models::entities::test1::{self, Test1};
+use crate::models::entities::test1::Test1;
 
 pub trait MysqlRepository {
     async fn create(&self, tx : &mut Transaction<'_, MySql>, test1: &Test1) -> Result<(u64, u64), sqlx::Error>;
