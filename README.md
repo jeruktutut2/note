@@ -1,17 +1,18 @@
 # NOTE
 
 ## App
-- request id -
-- server sent event -
-- stream -
+- request id
+- server sent event
+- stream
 - timeout -
 - rabbitmq -
 - kafka -
-- mysql -
-- postgresql -
+- mysql
+- postgresql
 - mongodb
-- redis -
-- memcache
+- redis
+- memcache -
 - algorithm
 - data structure
 - mqtt
+- image -

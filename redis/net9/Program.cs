@@ -1,3 +1,4 @@
+using net9.Services;
 using net9.Utils;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -6,6 +7,8 @@ var builder = WebApplication.CreateBuilder(args);
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
 builder.Services.AddSingleton<RedisUtil>();
+builder.Services.AddScoped<ITest1Service, Test1Service>();
+builder.Services.AddControllers();
 
 var app = builder.Build();
 
@@ -36,6 +39,8 @@ app.MapGet("/weatherforecast", () =>
 })
 .WithName("GetWeatherForecast");
 
+app.UseRouting();
+app.MapControllers();
 app.Run();
 
 record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)

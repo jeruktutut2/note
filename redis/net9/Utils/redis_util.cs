@@ -7,7 +7,6 @@ public class RedisUtil {
     private readonly IDatabase _db;
 
     public RedisUtil(IConfiguration configuration) {
-        // Console.WriteLine($"{DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm:ss")} redis: connecting to localhost:")
         string connectionString = configuration.GetValue<string>("Redis:ConnectionString");
         Console.WriteLine($"{DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm:ss")} redis: connecting to {connectionString}");
         _connection = ConnectionMultiplexer.Connect(connectionString);
@@ -15,4 +14,6 @@ public class RedisUtil {
         _db = _connection.GetDatabase(dbIndex);
         Console.WriteLine($"{DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm:ss")} redis: connected to {connectionString}");
     }
+
+    public IDatabase GetDatabase() => _db;
 }
