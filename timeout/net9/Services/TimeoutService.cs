@@ -70,11 +70,14 @@ public class TimeoutService: ITimeoutService
             test1 = new() { Test = $"test1 2 {DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm:ss")}"};
             await _postgresContext.Test1.AddAsync(test1, cancellationToken);
             await _postgresContext.SaveChangesAsync(cancellationToken);
+
+            await transaction.CommitAsync(cancellationToken);
             
             return "ok";
         }
         catch(Exception e)
         {
+            await transaction.RollbackAsync(cancellationToken);
             Console.WriteLine($"error: {e}");
             return "error";
         }

@@ -7,4 +7,6 @@
     cargo add serde  --features derive
     cargo add chrono
     cargo add serde_json
-    cargo add tower --features full
+    <!-- cargo add tower --features full -->
+    cargo add tower-http --features full
+    cargo add tokio-util --features full

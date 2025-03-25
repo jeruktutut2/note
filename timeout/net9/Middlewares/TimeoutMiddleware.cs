@@ -11,7 +11,7 @@ public class TimeoutMiddleware
 
     public async Task Invoke(HttpContext context)
     {
-        using var timeoutCts = new CancellationTokenSource(TimeSpan.FromSeconds(5));
+        using var timeoutCts = new CancellationTokenSource(TimeSpan.FromSeconds(10));
         using var linkedCts = CancellationTokenSource.CreateLinkedTokenSource(timeoutCts.Token, context.RequestAborted);
 
         context.Items["RequestTimeoutToken"] = linkedCts.Token;
