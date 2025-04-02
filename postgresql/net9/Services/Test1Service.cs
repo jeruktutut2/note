@@ -40,7 +40,6 @@ public class Test1Service: ITest1Service {
     {
         try
         {
-            // var test1 = await _postgresContext.Test1.FindAsync(id);
             var test1 = await _postgresContext.Test1.AsNoTracking().FirstOrDefaultAsync(t => t.Id == id);
             if (test1 == null) {
                 return ResponseHelper.SetNotFoundResponse<GetByIdResponse>($"cannot find test1 with id: {id}");

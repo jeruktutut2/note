@@ -1,8 +1,16 @@
+using net9.Consumers;
+using net9.Publisher;
+using net9.Services;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
+builder.Services.AddHostedService<MqttConsumer>();
+builder.Services.AddSingleton<MqttPublisher>();
+builder.Services.AddScoped<IMqttService, MqttService>();
+builder.Services.AddControllers();
 
 var app = builder.Build();
 
@@ -33,7 +41,10 @@ app.MapGet("/weatherforecast", () =>
 })
 .WithName("GetWeatherForecast");
 
-app.Run();
+app.UseRouting();
+app.MapControllers();
+// app.Run();
+await app.RunAsync();
 
 record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
 {

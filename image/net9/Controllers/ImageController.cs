@@ -1,27 +1,24 @@
 using Microsoft.AspNetCore.Mvc;
+using net9.Models.Requests;
+using net9.Services;
 
 namespace net9.Controllers;
 
 [ApiController]
-[Route("api/v1/image")]
+// [Route("api/v1/image")]
+[Route("image")]
 public class ImageController: ControllerBase
 {
-    public ImageController()
+    private readonly IImageService _imageservice;
+    public ImageController(IImageService imageService)
     {
-
+        _imageservice = imageService;
     }
-
-    [HttpGet("{id}")]
-    public async Task<IActionResult> GetTest1([FromRoute] int id)
-    {
-        var response = await _test1Service.GetById(id);
-        return StatusCode(response.HttpStatuscode, response.BodyResponse);
-    }
-
+    
     [HttpPost]
-    public async Task<IActionResult> PostTest1([FromBody] Test1CreateRequest test1CreateRequest)
+    public IActionResult CheckImage([FromBody] ImageRequest imageRequest)
     {
-        var response = await _test1Service.Create(test1CreateRequest);
-        return StatusCode(response.HttpStatuscode, response.BodyResponse);
+        string response = _imageservice.CheckImage(imageRequest);
+        return StatusCode(200, response);
     }
 }

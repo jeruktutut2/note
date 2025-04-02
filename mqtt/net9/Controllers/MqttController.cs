@@ -1,27 +1,23 @@
 using Microsoft.AspNetCore.Mvc;
+using net9.Services;
 
 namespace net9.Controllers;
 
 [ApiController]
-[Route("api/v1/mqtt")]
+// [Route("api/v1/mqtt")]
+[Route("mqtt")]
 public class MqttController: ControllerBase
 {
-    public MqttController()
+    private readonly IMqttService _mqttService;
+    public MqttController(IMqttService mqttService)
     {
-
+        _mqttService = mqttService;
     }
 
-    [HttpGet("{id}")]
-    public async Task<IActionResult> GetTest1([FromRoute] int id)
+    [HttpGet("send-message/{message}")]
+    public async Task<IActionResult> SendMessage([FromRoute] string message)
     {
-        var response = await _test1Service.GetById(id);
-        return StatusCode(response.HttpStatuscode, response.BodyResponse);
-    }
-
-    [HttpPost]
-    public async Task<IActionResult> PostTest1([FromBody] Test1CreateRequest test1CreateRequest)
-    {
-        var response = await _test1Service.Create(test1CreateRequest);
-        return StatusCode(response.HttpStatuscode, response.BodyResponse);
+        var response = await _mqttService.SendMessage(message);
+        return StatusCode(200, response);
     }
 }

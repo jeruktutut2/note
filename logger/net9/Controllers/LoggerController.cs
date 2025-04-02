@@ -1,27 +1,23 @@
 using Microsoft.AspNetCore.Mvc;
+using net9.Services;
 
 namespace net9.Controllers;
 
 [ApiController]
-[Route("api/v1/logger")]
+// [Route("api/v1/logger")]
+[Route("logger")]
 public class LoggerController: ControllerBase
 {
-    public LoggerController()
+    private readonly ILoggerService _loggerService;
+    public LoggerController(ILoggerService loggerService)
     {
-
+        _loggerService = loggerService;
     }
-
-    [HttpGet("{id}")]
-    public async Task<IActionResult> GetTest1([FromRoute] int id)
+    
+    [HttpGet]
+    public IActionResult CheckPanic()
     {
-        var response = await _test1Service.GetById(id);
-        return StatusCode(response.HttpStatuscode, response.BodyResponse);
-    }
-
-    [HttpPost]
-    public async Task<IActionResult> PostTest1([FromBody] Test1CreateRequest test1CreateRequest)
-    {
-        var response = await _test1Service.Create(test1CreateRequest);
-        return StatusCode(response.HttpStatuscode, response.BodyResponse);
+        string response = _loggerService.CheckLogger();
+        return StatusCode(200, response);
     }
 }

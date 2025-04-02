@@ -6,7 +6,9 @@
 
 ## docker
     docker-compose up -d
+    docker-compose -f docker-compose_1.yml up -d
     docker-compose down
+    docker-compose -f docker-compose_1.yml down
 
 ## topic
     create email topic: kafka-topics --bootstrap-server localhost:9092 --create --topic email

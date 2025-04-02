@@ -15,7 +15,6 @@ namespace net9.Controllers {
 
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById([FromRoute] int id){
-            // return Ok();
             var response = await _test1Service.GetById(id);
             return StatusCode(response.HttpStatusCode, response.BodyResponse);
         }
@@ -23,7 +22,6 @@ namespace net9.Controllers {
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] CreateRequest createRequest){
             var response = await _test1Service.Create(createRequest);
-            // return Ok();
             return StatusCode(response.HttpStatusCode, response.BodyResponse);
         }
 

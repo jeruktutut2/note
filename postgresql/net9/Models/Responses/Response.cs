@@ -31,7 +31,6 @@ public class Response<T>
 public static class ResponseHelper {
     public static Response<T> SetResponse<T>(int httpStatusCode, T? data, Dictionary<string, string>? errors)
     {
-        // var bodyResponse = new BodyResponse<T>(data, errors);
         return new Response<T>(httpStatusCode, new BodyResponse<T>(data, errors));
     }
 
