@@ -21,7 +21,6 @@ public class ImageService: IImageService
             bool isValidMagicBytes = validSignatures.Any(sig => imageBytes.Take(sig.Length).SequenceEqual(sig));
             if (!isValidMagicBytes) return "false";
             using var stream = new MemoryStream(imageBytes);
-            // using var image = Image.Load(stream, out IImageFormat format);
             using var image = Image.LoadAsync(stream);
             return "ok";
         }
@@ -30,6 +29,5 @@ public class ImageService: IImageService
             Console.WriteLine($"error: {e}");
             return "error";
         }
-        // return "ok";
     }
 }

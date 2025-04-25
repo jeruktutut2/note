@@ -13,7 +13,6 @@ import (
 func main() {
 	e := echo.New()
 	e.GET("/image", func(c echo.Context) error {
-		// time.Sleep(5 * time.Second)
 		return c.File("images/image.jpg")
 	})
 

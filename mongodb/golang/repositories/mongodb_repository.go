@@ -31,7 +31,7 @@ func (repository *mongodbRepository) Create(db *mongo.Database, ctx context.Cont
 }
 
 func (repository *mongodbRepository) Get(db *mongo.Database, ctx context.Context, test string) (test1s []modelentities.Test1, err error) {
-	cursor, err := db.Collection("test1").Find(ctx, bson.M{"test": test}, nil)
+	cursor, err := db.Collection("test1").Find(ctx, bson.D{{Key: "test", Value: test}}, nil)
 	if err != nil {
 		return
 	}
@@ -60,12 +60,26 @@ func (repository *mongodbRepository) Get(db *mongo.Database, ctx context.Context
 }
 
 func (repository *mongodbRepository) GetById(db *mongo.Database, ctx context.Context, id primitive.ObjectID) (test1 modelentities.Test1, err error) {
-	err = db.Collection("test1").FindOne(ctx, bson.M{"_id": id}, nil).Decode(&test1)
+	err = db.Collection("test1").FindOne(ctx, bson.D{{Key: "_id", Value: id}}, nil).Decode(&test1)
 	return
 }
 
 func (repository *mongodbRepository) UpdateOne(db *mongo.Database, ctx context.Context, test1 modelentities.Test1) (rowsAffected int64, err error) {
-	result, err := db.Collection("test1").UpdateOne(ctx, bson.M{"_id": test1.Id}, bson.M{"$set": bson.M{"test": test1.Test}})
+	// a := bson.M{
+	// 	"$set": bson.M{
+	// 		"test": test1.Test,
+	// 	},
+	// }
+
+	update := bson.D{
+		{
+			Key: "$set", Value: bson.D{
+				{Key: "test", Value: test1.Test},
+			},
+		},
+	}
+
+	result, err := db.Collection("test1").UpdateOne(ctx, bson.D{{Key: "_id", Value: test1.Id}}, update)
 	if err != nil {
 		return
 	}
@@ -74,7 +88,15 @@ func (repository *mongodbRepository) UpdateOne(db *mongo.Database, ctx context.C
 }
 
 func (repository *mongodbRepository) UpdateById(db *mongo.Database, ctx context.Context, test1 modelentities.Test1) (rowsAffected int64, err error) {
-	result, err := db.Collection("test1").UpdateByID(ctx, test1.Id, bson.M{"$set": bson.M{"test": test1.Test}}, nil)
+	// bson.M{"$set": bson.M{"test": test1.Test}}
+	update := bson.D{
+		{
+			Key: "$set", Value: bson.D{
+				{Key: "test", Value: test1.Test},
+			},
+		},
+	}
+	result, err := db.Collection("test1").UpdateByID(ctx, test1.Id, update, nil)
 	if err != nil {
 		return
 	}
@@ -83,7 +105,7 @@ func (repository *mongodbRepository) UpdateById(db *mongo.Database, ctx context.
 }
 
 func (repository *mongodbRepository) DeleteOne(db *mongo.Database, ctx context.Context, id primitive.ObjectID) (rowsAffected int64, err error) {
-	result, err := db.Collection("test1").DeleteOne(ctx, bson.M{"_id": id}, nil)
+	result, err := db.Collection("test1").DeleteOne(ctx, bson.D{{Key: "_id", Value: id}}, nil)
 	if err != nil {
 		return
 	}
