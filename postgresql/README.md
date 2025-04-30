@@ -30,6 +30,7 @@ to do benchmarking
 
 
 ## postgresql
+    docker exec -it project-postgres bash
     psql -h localhost -d project_users -U postgres -W
     \list \l
     \c project_users
@@ -37,6 +38,7 @@ to do benchmarking
 
     CREATE DATABASE ecommercev2;
     \c ecommercev2
+    \c test1
     \dt
 
     CREATE TABLE users (
@@ -64,3 +66,33 @@ to do benchmarking
         -H "Content-Type: application/json" \
         -d '{"id": 6}' \
         http://localhost:8080/api/v1/test1
+
+## another tutorial
+    is_apply_constrain_unique = true, it is use to implement unique constraint for selected data.
+
+    CREATE TABLE users (
+        id SERIAL PRIMARY KEY,
+        username TEXT NOT NULL,
+        email TEXT NOT NULL,
+        is_apply_constrain_unique BOOLEAN DEFAULT false
+    );
+
+    CREATE UNIQUE INDEX unique_email_if_applied
+        ON users (email)
+    WHERE is_apply_constrain_unique = true;
+
+    make sure that only row data with is_apply_constrain_unique = true that only has unique email
+
+    -- ✅ Diterima karena tidak terikat constraint
+    INSERT INTO users (username, email, is_apply_constrain_unique)
+    VALUES ('user1', 'john@example.com', false);
+
+    -- ✅ Diterima karena pertama kali email ini digunakan dalam constraint
+    INSERT INTO users (username, email, is_apply_constrain_unique)
+    VALUES ('user2', 'john@example.com', true);
+
+    -- ❌ Ditolak karena email yang sama digunakan lagi saat is_apply_constrain_unique = true
+    INSERT INTO users (username, email, is_apply_constrain_unique)
+    VALUES ('user3', 'john@example.com', true);
+
+    SELECT * FROM users;

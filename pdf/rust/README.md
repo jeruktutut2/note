@@ -8,3 +8,7 @@
     cargo add serde_json
     cargo add genpdf
     cargo add anyhow
+
+    for incremental generating pdf
+    cargo add lopdf
+    cargo add printpdf

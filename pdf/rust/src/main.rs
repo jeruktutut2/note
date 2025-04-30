@@ -11,7 +11,6 @@ mod routes;
 
 #[tokio::main]
 async fn main() {
-    // println!("Hello, world!");
     let app = Router::new().merge(set_route());
     let listener = TcpListener::bind("0.0.0.0:8080").await.unwrap();
     println!("{} axum: connected to {} {}", Local::now().format("%Y-%m-%d %H:%M:%S%.3f").to_string(), "0.0.0.0", "8080");
