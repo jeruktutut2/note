@@ -8,6 +8,7 @@
 
 <template>
   <!-- <HelloWorld msg="Vite + Vue" /> -->
+    <!-- <input type="text" placeholder="text" class="p-3 m-3" /> -->
     <!-- <div>
         <button class="bg-blue-500 text-white px-4 py-2 rounded">Button Host</button>
     </div> -->

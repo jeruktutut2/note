@@ -16,26 +16,36 @@ export default defineConfig({
                     "./Button": "./src/lib/Button.svelte",
                     "./Text": "./src/lib/Text.svelte",
                 },
+                // shared: {
+                //     svelte: {
+                //         singleton: true,
+                //         // strictVersion: true,
+                //         // requiredVersion: '^3.0.0'
+                //     },
+                //     tailwindcss: {
+                //         singleton: true,
+                //         // requiredVersion: '^3.0.0'
+                //     },
+                // },
+                // shared: ['svelte'],
+                // shared: {
+                //     svelte: {
+                //       singleton: true,
+                //       requiredVersion: '^3.0.0'
+                //     }
+                // }
+                // shared: ['svelte', 'svelte/internal']
                 shared: {
-                    svelte: {
-                        singleton: true,
-                        // strictVersion: true,
-                        // requiredVersion: '^3.0.0'
-                    },
-                    tailwindcss: {
-                        singleton: true,
-                        // requiredVersion: '^3.0.0'
-                    },
-                },
-                // ['svelte'],
+                    svelte: { singleton: true, requiredVersion: '^3.0.0' }
+                }
             }
         ),
     ],
     build: {
         target: 'esnext',
         minify: false,
-        cssCodeSplit: false,
-        modulePreload: false,
+        // cssCodeSplit: false,
+        // modulePreload: false,
         // rollupOptions: {
         //     output: {
         //         format: 'iife',

@@ -13,37 +13,38 @@
     // import('remote/Text').then((module) => {
     //     Text = module.default;
     // });
-    let Button = Loading;
-    let Text = Loading;
-    let errorMessage = "";
+    // let Button = Loading;
+    // let Text = Loading;
+    // let errorMessage = "";
+    let Button
 
-    function loadRemoteEntry(url) {
-        return new Promise((resolve, reject) => {
-            const script = document.createElement('script');
-            script.src = url;
-            script.type = 'text/javascript';
-            script.async = true;
-            script.onload = () => resolve();
-            script.onerror = () => reject(new Error(`Failed to load remote entry ${url}`));
-            document.head.appendChild(script);
-        });
-    }
+    // function loadRemoteEntry(url) {
+    //     return new Promise((resolve, reject) => {
+    //         const script = document.createElement('script');
+    //         script.src = url;
+    //         script.type = 'text/javascript';
+    //         script.async = true;
+    //         script.onload = () => resolve();
+    //         script.onerror = () => reject(new Error(`Failed to load remote entry ${url}`));
+    //         document.head.appendChild(script);
+    //     });
+    // }
 
     onMount(async () => {
-        try {
+        // try {
             // console.log("remote entry belum masuk")
             // await loadRemoteEntry('http://localhost:3001/assets/remoteEntry.js');
             // console.log("remote entry masuk")
             const buttonRemote = await import('remote/Button');
             Button = buttonRemote.default;
-            const textRemote = await import('remote/Text');
-            Text = textRemote.default;
-        } catch (err) {
-            console.error('Error loading remote', err);
-            errorMessage = `Error: ${err.message || 'Failed to load component.'}`;
-            Button = ErrorFallback;
-            Text = ErrorFallback;
-        }
+            // const textRemote = await import('remote/Text');
+            // Text = textRemote.default;
+        // } catch (err) {
+        //     console.error('Error loading remote', err);
+        //     errorMessage = `Error: ${err.message || 'Failed to load component.'}`;
+        //     Button = ErrorFallback;
+        //     Text = ErrorFallback;
+        // }
   });
 </script>
 
@@ -79,11 +80,11 @@
         <p>Loading Button remote component...</p>
     {/if}
 
-    {#if Text}
+    <!-- {#if Text}
         <svelte:component this={Text} name="Text Host App" />
     {:else}
         <p>Loading Text remote component...</p>
-    {/if}
+    {/if} -->
 </main>
 
 <style>

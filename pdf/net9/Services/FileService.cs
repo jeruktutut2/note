@@ -16,21 +16,20 @@ public class FileService: IFileService
             var document = new PdfDocument();
             var page = document.AddPage();
             var gpx = XGraphics.FromPdfPage(page);
-            gpx.DrawString("Initial Empty PDF", new XFont("Arial", 12), XBrushes.Black, new XRect(0, 0, page.Width, page.Height));
+            gpx.DrawString("Initial Empty PDF", new XFont("Arial", 12), XBrushes.Black, new XRect(0, 0, page.Width, 0)); //page.Height
             document.Save(path);
 
             // merge pdf
             for (int i = 0; i < 3; i++)
             {
-                string partPath = "pdfs/part.pdf";
+                string partPath = $"pdfs/part{i}.pdf";
                 var partDocument = new PdfDocument();
-                var partPage = document.AddPage();
+                var partPage = partDocument.AddPage();
                 var partGpx = XGraphics.FromPdfPage(partPage);
-                partGpx.DrawString(i.ToString(), new XFont("Arial", 12), XBrushes.Black, new XRect(0, 0, page.Width, page.Height));
+                partGpx.DrawString(i.ToString(), new XFont("Arial", 12), XBrushes.Black, new XRect(0, 0, page.Width, 0)); //page.Height
                 partDocument.Save(partPath);
 
-                var partInput = PdfReader.Open(partPath, PdfDocumentOpenMode.Import);
-
+                // var partInput = PdfReader.Open(partPath, PdfDocumentOpenMode.Import);
             }
             return "success";
         }

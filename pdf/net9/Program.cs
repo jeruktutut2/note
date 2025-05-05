@@ -7,6 +7,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
 builder.Services.AddScoped<IPdfService, PdfService>();
+builder.Services.AddScoped<IFileService, FileService>();
 builder.Services.AddControllers();
 
 QuestPDF.Settings.License = LicenseType.Community;
